@@ -7,7 +7,7 @@ hero:
   text: "使用文档"
   tagline: 最好用的在浙学网课助手
   image:
-    src: "https://zzx.xnj.yanhuoyun.cn/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.svg"
+    src: "../img/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.svg"
     alt: logo for hlae
 
   actions:

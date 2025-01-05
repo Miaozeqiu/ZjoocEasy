@@ -1,13 +1,13 @@
 ::: warning
-如果你使用的是学习通或是其他平台，该助手以及题库提供不了任何帮助
+如果你使用的是学习通或是其他平台，该助手以及在浙学题库提供不了任何帮助，本站只有‘私人题库’支持OCS，我们正在不断完善私人题库，希望能够打造成你和小伙伴们的共同题库...
 :::
 
 <div align="center">
 
-<a><img src="https://zzx.xnj.yanhuoyun.cn/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png" width="120" height="120" /></a> 
+<a><img src="../img/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png" width="120" height="120" /></a> 
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-    <h1>在浙学网课助手|ZjoocEasy</h1>
+    <h1>ZE|在浙学网课助手</h1>
     <img src="https://img.shields.io/github/stars/Miaozeqiu/ZjoocEasy" alt="GitHub Stars"/>
 </div>
 

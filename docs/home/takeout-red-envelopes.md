@@ -6,7 +6,7 @@ Buy me a coffee~☕
 
 ## 美团
 
-![https://zzx.xnj.yanhuoyun.cn/美团外卖.jpg](https://zzx.xnj.yanhuoyun.cn/美团外卖.jpg)
+![../img/美团外卖.jpg](../img/美团外卖.jpg)
 用 `美团` 扫描二维码 或者复制下面文字到美团打开
 ```
 1美团外卖节

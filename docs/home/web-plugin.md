@@ -7,7 +7,7 @@
 
 ## 🌟效果展示
 
-![https://zzx.xnj.yanhuoyun.cn/效果图.png](https://zzx.xnj.yanhuoyun.cn/效果图.png)
+![../img/效果图.png](../img/效果图.png)
 
 ## 📲安装方法
 > 只展示油猴插件的安装方法，插件同样发布在了ScriptCat,安装方法类似
@@ -15,23 +15,23 @@
 ::: tip
 
 打开`浏览器的扩展商店`，找到并安装`油猴浏览器插件`
-![https://zzx.xnj.yanhuoyun.cn/获取扩展.png](https://zzx.xnj.yanhuoyun.cn/获取扩展.png)
+![../img/获取扩展.png](../img/获取扩展.png)
 
 
-![https://zzx.xnj.yanhuoyun.cn/安装油猴浏览器插件2.png](https://zzx.xnj.yanhuoyun.cn/安装油猴浏览器插件2.png)
+![../img/安装油猴浏览器插件2.png](../img/安装油猴浏览器插件2.png)
 :::
 
 ### 2️⃣安装脚本
 ::: tip
 
 打开脚本的[油叉页面](https://greasyfork.org/zh-CN/scripts/520141-%E5%9C%A8%E6%B5%99%E5%AD%A6%E9%A2%98%E5%BA%93%E6%90%9C%E7%B4%A2)，安装脚本
-![https://zzx.xnj.yanhuoyun.cn/在浙学油叉.png](https://zzx.xnj.yanhuoyun.cn/在浙学油叉.png)
+![../img/在浙学油叉.png](../img/在浙学油叉.png)
 :::
 
 ### 3️⃣打开浏览器开发者模式
 ::: tip
 
-![https://zzx.xnj.yanhuoyun.cn/打开开发人员模式.png](https://zzx.xnj.yanhuoyun.cn/打开开发人员模式.png)
+![../img/打开开发人员模式.png](../img/打开开发人员模式.png)
 :::
 
 ### 4️⃣配置token  

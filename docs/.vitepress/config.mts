@@ -10,13 +10,13 @@ export default defineConfig({
       {
         rel: "icon",
         type: "image/svg",
-        href: "https://zzx.xnj.yanhuoyun.cn/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png",
+        href: "../img/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png",
       },
     ],
   ],
 
   themeConfig: {
-    logo:"https://zzx.xnj.yanhuoyun.cn/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png",
+    logo:"../img/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png",
     nav: [
       { text: '首页', link: '/home/about' },
       { text: '日志', link: '/home/log' }

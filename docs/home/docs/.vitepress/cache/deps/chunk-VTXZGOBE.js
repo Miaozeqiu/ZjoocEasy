@@ -2568,14 +2568,14 @@ function useBase64(target, options) {
         } else if (_target instanceof HTMLCanvasElement) {
           resolve(_target.toDataURL(options == null ? void 0 : options.type, options == null ? void 0 : options.quality));
         } else if (_target instanceof HTMLImageElement) {
-          const img = _target.cloneNode(false);
-          img.crossOrigin = "Anonymous";
-          imgLoaded(img).then(() => {
+          const ../img = _target.cloneNode(false);
+          ../img.crossOrigin = "Anonymous";
+          ../imgLoaded(../img).then(() => {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.width = ../img.width;
+            canvas.height = ../img.height;
+            ctx.drawImage(../img, 0, 0, canvas.width, canvas.height);
             resolve(canvas.toDataURL(options == null ? void 0 : options.type, options == null ? void 0 : options.quality));
           }).catch(reject);
         } else if (typeof _target === "object") {
@@ -2602,13 +2602,13 @@ function useBase64(target, options) {
     execute
   };
 }
-function imgLoaded(img) {
+function ../imgLoaded(../img) {
   return new Promise((resolve, reject) => {
-    if (!img.complete) {
-      img.onload = () => {
+    if (!../img.complete) {
+      ../img.onload = () => {
         resolve();
       };
-      img.onerror = reject;
+      ../img.onerror = reject;
     } else {
       resolve();
     }
@@ -5475,23 +5475,23 @@ function useIdle(timeout = oneMinute, options = {}) {
 }
 async function loadImage(options) {
   return new Promise((resolve, reject) => {
-    const img = new Image();
+    const ../img = new Image();
     const { src, srcset, sizes, class: clazz, loading, crossorigin, referrerPolicy } = options;
-    img.src = src;
+    ../img.src = src;
     if (srcset)
-      img.srcset = srcset;
+      ../img.srcset = srcset;
     if (sizes)
-      img.sizes = sizes;
+      ../img.sizes = sizes;
     if (clazz)
-      img.className = clazz;
+      ../img.className = clazz;
     if (loading)
-      img.loading = loading;
+      ../img.loading = loading;
     if (crossorigin)
-      img.crossOrigin = crossorigin;
+      ../img.crossOrigin = crossorigin;
     if (referrerPolicy)
-      img.referrerPolicy = referrerPolicy;
-    img.onload = () => resolve(img);
-    img.onerror = reject;
+      ../img.referrerPolicy = referrerPolicy;
+    ../img.onload = () => resolve(../img);
+    ../img.onerror = reject;
   });
 }
 function useImage(options, asyncStateOptions = {}) {
