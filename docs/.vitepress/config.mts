@@ -10,13 +10,13 @@ export default defineConfig({
       {
         rel: "icon",
         type: "image/svg",
-        href: "../img/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png",
+        href: "/images/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png",
       },
     ],
   ],
 
   themeConfig: {
-    logo:"../img/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png",
+    logo:"/images/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png",
     nav: [
       { text: '首页', link: '/home/about' },
       { text: '日志', link: '/home/log' }
@@ -34,7 +34,7 @@ export default defineConfig({
           { text: '常见问题', link: '/home/frequently-asked-questions'},
           { text: '私人题库', link: '/home/private-question-bank' },
           { text: '日志', link: '/home/log' },
-          { text: 'API', link: '/home/api' },
+          { text: 'API', link: '/home/API' },
           { text: '外卖红包', link: '/home/takeout-red-envelopes' },
         ]
       }

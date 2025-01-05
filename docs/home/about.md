@@ -4,7 +4,7 @@
 
 <div align="center">
 
-<a><img src="../img/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png" width="120" height="120" /></a> 
+<a><img src="/images/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png" width="120" height="120" /></a> 
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
     <h1>ZE|在浙学网课助手</h1>
