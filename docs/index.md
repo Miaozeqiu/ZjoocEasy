@@ -16,7 +16,7 @@ hero:
       link: /home/about#✨apps
     - theme: alt
       text: 题库
-      link: /home/log
+      link: "https://app.zaizhexue.top"
 
 features:
   - title: 💰完全免费
