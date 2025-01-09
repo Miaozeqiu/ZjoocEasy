@@ -15,17 +15,17 @@
 
 <a href="https://greasyfork.org/zh-CN/scripts/520141"><img src="https://greasyfork.org/vite/assets/blacklogo96-CxYTSM_T.png" width="40" height="40" /></a> 
 
-<div style="display: flex; justify-content: flex-start; justify-content: center; margin-top: 5px" >
+<div style="display: flex; justify-content: flex-start; justify-content: center; margin-top: 0px" >
 
-<img src="https://img.shields.io/badge/dynamic/json?style=flat-square&color=orange&label=%E4%BB%8A%E6%97%A5%E5%AE%89%E8%A3%85&query=$.daily_installs&url=https://greasyfork.org/scripts/520141.json" style="margin:2px"/> 
-<img src="https://img.shields.io/badge/dynamic/json?style=flat-square&color=red&label=%E6%80%BB%E5%85%B1%E5%AE%89%E8%A3%85&query=$.total_installs&url=https://greasyfork.org/scripts/520141.json" style="margin:2px"/> 
+<img src="https://img.shields.io/badge/dynamic/json?color=orange&label=%E4%BB%8A%E6%97%A5%E5%AE%89%E8%A3%85&query=$.daily_installs&url=https://greasyfork.org/scripts/520141.json" style="margin:2px"/> 
+<img src="https://img.shields.io/badge/dynamic/json?color=red&label=%E6%80%BB%E5%85%B1%E5%AE%89%E8%A3%85&query=$.total_installs&url=https://greasyfork.org/scripts/520141.json" style="margin:2px"/> 
 
 </div>
 <a href="https://scriptcat.org/zh-CN/script-show-page/2522"><img src="https://scriptcat.org/assets/logo.png" width="45" height="45" style="margin-top:15px"/></a> 
-<div style="display: flex; justify-content: flex-start; justify-content: center; margin-top: 0px" >
-<img src="https://img.shields.io/badge/dynamic/xml?style=flat-square&color=orange&label=%E4%BB%8A%E6%97%A5%E5%AE%89%E8%A3%85&url=https%3A%2F%2Fscriptcat.org%2Fzh-CN%2Fscript-show-page%2F2522&query=/html/body/div[1]/main/div/div[2]/div/div[3]/div/div[1]/div/span[2]" style="margin:2px"/> 
+<div style="display: flex; justify-content: flex-start; justify-content: center; margin-top: 8px" >
+<img src="https://img.shields.io/badge/dynamic/xml?color=orange&label=%E4%BB%8A%E6%97%A5%E5%AE%89%E8%A3%85&url=https%3A%2F%2Fscriptcat.org%2Fzh-CN%2Fscript-show-page%2F2522&query=/html/body/div[1]/main/div/div[2]/div/div[3]/div/div[1]/div/span[2]" style="margin:2px"/> 
 
-<img src="https://img.shields.io/badge/dynamic/xml?style=flat-square&color=red&label=%E6%80%BB%E5%85%B1%E5%AE%89%E8%A3%85&url=https%3A%2F%2Fscriptcat.org%2Fzh-CN%2Fscript-show-page%2F2522&query=%2Fhtml%2Fbody%2Fdiv%2Fmain%2Fdiv%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B3%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%2Fspan%5B2%5D" style="margin:2px"/> 
+<img src="https://img.shields.io/badge/dynamic/xml?color=red&label=%E6%80%BB%E5%85%B1%E5%AE%89%E8%A3%85&url=https%3A%2F%2Fscriptcat.org%2Fzh-CN%2Fscript-show-page%2F2522&query=%2Fhtml%2Fbody%2Fdiv%2Fmain%2Fdiv%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B3%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%2Fspan%5B2%5D" style="margin:2px"/> 
 
 </div>
 </div>
@@ -69,6 +69,9 @@
 ## ☕待更新的Issues
 1. 试卷展示页面有待开发
 2. 搜索引擎优化
+3. 自动答题功能
+4. AI搜索功能
+5. 用Vue重写网站界面
 
 
 

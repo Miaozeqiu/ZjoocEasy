@@ -15,7 +15,7 @@ hero:
       text: 开始使用
       link: /home/about#✨apps
     - theme: alt
-      text: 日志
+      text: 题库
       link: /home/log
 
 features:
