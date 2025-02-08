@@ -10,7 +10,14 @@
 ![images/效果图.png](/images/效果图.png)
 
 ## 📲安装方法
-> 只展示油猴插件的安装方法，插件同样发布在了ScriptCat,安装方法类似
+
+> 2025年2月6日起Greasy Fork已无法访问，请参照视频中教程使用脚本猫(ScriptCat)
+
+### 📺视频教程
+
+[点击观看](https://www.xiaohongshu.com/discovery/item/6787cf1d000000001c00f4c3?source=webshare&xhsshare=pc_web&xsec_token=ABKhdH-1OH--j4ksujqKO9xeuQdEb1Kl9lzHWJ4YFFqWA=&xsec_source=pc_share)
+视频中遗漏了“打开开发者模式”，即下方步骤3️⃣
+
 ### 1️⃣安装油猴浏览器插件
 ::: tip
 
