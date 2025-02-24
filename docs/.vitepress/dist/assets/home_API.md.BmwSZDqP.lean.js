@@ -1,0 +1,1 @@
+import{_ as i,c as a,o as n,ae as t}from"./chunks/framework.DN7zo1cr.js";const g=JSON.parse('{"title":"API(停止维护)","description":"","frontmatter":{},"headers":[],"relativePath":"home/API.md","filePath":"home/API.md"}'),h={name:"home/API.md"};function p(k,s,l,e,E,r){return n(),a("div",null,s[0]||(s[0]=[t("",11)]))}const y=i(h,[["render",p]]);export{g as __pageData,y as default};
