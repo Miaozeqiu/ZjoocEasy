@@ -5,7 +5,7 @@
     "rsshub": "^1.0.0-master.00d7e3e"
   },
   "devDependencies": {
-    "vitepress": "^1.4.1"
+    "vitepress": "^1.6.3"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",

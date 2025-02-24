@@ -1,4 +1,4 @@
-// ../node_modules/@vue/devtools-shared/dist/index.js
+// node_modules/@vue/devtools-shared/dist/index.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -28,7 +28,7 @@ var __toESM = (mod, isNodeMode, target2) => (target2 = mod != null ? __create(__
   mod
 ));
 var init_esm_shims = __esm({
-  "../../node_modules/.pnpm/tsup@8.3.0_@microsoft+api-extractor@7.43.0_@types+node@20.16.14__@swc+core@1.5.29_jiti@2.0.0__utvtwgyeu6xd57udthcnogp47u/node_modules/tsup/assets/esm_shims.js"() {
+  "../../node_modules/.pnpm/tsup@8.3.5_@microsoft+api-extractor@7.48.1_@types+node@22.10.5__jiti@2.4.2_postcss@8.4.49_tsx_s7k37zks4wtn7x2grzma6lrsfa/node_modules/tsup/assets/esm_shims.js"() {
     "use strict";
   }
 });
@@ -258,7 +258,7 @@ function isUrlString(str) {
 }
 var deepClone = (0, import_rfdc.default)({ circles: true });
 
-// ../node_modules/perfect-debounce/dist/index.mjs
+// node_modules/perfect-debounce/dist/index.mjs
 var DEBOUNCE_DEFAULTS = {
   trailing: true
 };
@@ -315,7 +315,7 @@ async function _applyPromised(fn, _this, args) {
   return await fn.apply(_this, args);
 }
 
-// ../node_modules/hookable/dist/index.mjs
+// node_modules/hookable/dist/index.mjs
 function flatHooks(configHooks, hooks2 = {}, parentName) {
   for (const key in configHooks) {
     const subHook = configHooks[key];
@@ -520,11 +520,11 @@ function createHooks() {
   return new Hookable();
 }
 
-// ../node_modules/birpc/dist/index.mjs
+// node_modules/birpc/dist/index.mjs
 var { clearTimeout: clearTimeout2, setTimeout: setTimeout2 } = globalThis;
 var random = Math.random.bind(Math);
 
-// ../node_modules/@vue/devtools-kit/dist/index.js
+// node_modules/@vue/devtools-kit/dist/index.js
 var __create2 = Object.create;
 var __defProp2 = Object.defineProperty;
 var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
@@ -554,7 +554,7 @@ var __toESM2 = (mod, isNodeMode, target22) => (target22 = mod != null ? __create
   mod
 ));
 var init_esm_shims2 = __esm2({
-  "../../node_modules/.pnpm/tsup@8.3.0_@microsoft+api-extractor@7.43.0_@types+node@20.16.14__@swc+core@1.5.29_jiti@2.0.0__utvtwgyeu6xd57udthcnogp47u/node_modules/tsup/assets/esm_shims.js"() {
+  "../../node_modules/.pnpm/tsup@8.3.5_@microsoft+api-extractor@7.48.1_@types+node@22.10.5__jiti@2.4.2_postcss@8.4.49_tsx_s7k37zks4wtn7x2grzma6lrsfa/node_modules/tsup/assets/esm_shims.js"() {
     "use strict";
   }
 });
@@ -2099,6 +2099,411 @@ init_esm_shims2();
 init_esm_shims2();
 init_esm_shims2();
 init_esm_shims2();
+init_esm_shims2();
+function getComponentTypeName(options) {
+  var _a25;
+  const name = options.name || options._componentTag || options.__VUE_DEVTOOLS_COMPONENT_GUSSED_NAME__ || options.__name;
+  if (name === "index" && ((_a25 = options.__file) == null ? void 0 : _a25.endsWith("index.vue"))) {
+    return "";
+  }
+  return name;
+}
+function getComponentFileName(options) {
+  const file = options.__file;
+  if (file)
+    return classify(basename(file, ".vue"));
+}
+function saveComponentGussedName(instance, name) {
+  instance.type.__VUE_DEVTOOLS_COMPONENT_GUSSED_NAME__ = name;
+  return name;
+}
+function getAppRecord(instance) {
+  if (instance.__VUE_DEVTOOLS_NEXT_APP_RECORD__)
+    return instance.__VUE_DEVTOOLS_NEXT_APP_RECORD__;
+  else if (instance.root)
+    return instance.appContext.app.__VUE_DEVTOOLS_NEXT_APP_RECORD__;
+}
+function isFragment(instance) {
+  var _a25, _b25;
+  const subTreeType = (_a25 = instance.subTree) == null ? void 0 : _a25.type;
+  const appRecord = getAppRecord(instance);
+  if (appRecord) {
+    return ((_b25 = appRecord == null ? void 0 : appRecord.types) == null ? void 0 : _b25.Fragment) === subTreeType;
+  }
+  return false;
+}
+function getInstanceName(instance) {
+  var _a25, _b25, _c;
+  const name = getComponentTypeName((instance == null ? void 0 : instance.type) || {});
+  if (name)
+    return name;
+  if ((instance == null ? void 0 : instance.root) === instance)
+    return "Root";
+  for (const key in (_b25 = (_a25 = instance.parent) == null ? void 0 : _a25.type) == null ? void 0 : _b25.components) {
+    if (instance.parent.type.components[key] === (instance == null ? void 0 : instance.type))
+      return saveComponentGussedName(instance, key);
+  }
+  for (const key in (_c = instance.appContext) == null ? void 0 : _c.components) {
+    if (instance.appContext.components[key] === (instance == null ? void 0 : instance.type))
+      return saveComponentGussedName(instance, key);
+  }
+  const fileName = getComponentFileName((instance == null ? void 0 : instance.type) || {});
+  if (fileName)
+    return fileName;
+  return "Anonymous Component";
+}
+function getUniqueComponentId(instance) {
+  var _a25, _b25, _c;
+  const appId = (_c = (_b25 = (_a25 = instance == null ? void 0 : instance.appContext) == null ? void 0 : _a25.app) == null ? void 0 : _b25.__VUE_DEVTOOLS_NEXT_APP_RECORD_ID__) != null ? _c : 0;
+  const instanceId = instance === (instance == null ? void 0 : instance.root) ? "root" : instance.uid;
+  return `${appId}:${instanceId}`;
+}
+function getComponentInstance(appRecord, instanceId) {
+  instanceId = instanceId || `${appRecord.id}:root`;
+  const instance = appRecord.instanceMap.get(instanceId);
+  return instance || appRecord.instanceMap.get(":root");
+}
+function createRect() {
+  const rect = {
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    get width() {
+      return rect.right - rect.left;
+    },
+    get height() {
+      return rect.bottom - rect.top;
+    }
+  };
+  return rect;
+}
+var range;
+function getTextRect(node) {
+  if (!range)
+    range = document.createRange();
+  range.selectNode(node);
+  return range.getBoundingClientRect();
+}
+function getFragmentRect(vnode) {
+  const rect = createRect();
+  if (!vnode.children)
+    return rect;
+  for (let i = 0, l = vnode.children.length; i < l; i++) {
+    const childVnode = vnode.children[i];
+    let childRect;
+    if (childVnode.component) {
+      childRect = getComponentBoundingRect(childVnode.component);
+    } else if (childVnode.el) {
+      const el = childVnode.el;
+      if (el.nodeType === 1 || el.getBoundingClientRect)
+        childRect = el.getBoundingClientRect();
+      else if (el.nodeType === 3 && el.data.trim())
+        childRect = getTextRect(el);
+    }
+    if (childRect)
+      mergeRects(rect, childRect);
+  }
+  return rect;
+}
+function mergeRects(a, b) {
+  if (!a.top || b.top < a.top)
+    a.top = b.top;
+  if (!a.bottom || b.bottom > a.bottom)
+    a.bottom = b.bottom;
+  if (!a.left || b.left < a.left)
+    a.left = b.left;
+  if (!a.right || b.right > a.right)
+    a.right = b.right;
+  return a;
+}
+var DEFAULT_RECT = {
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  width: 0,
+  height: 0
+};
+function getComponentBoundingRect(instance) {
+  const el = instance.subTree.el;
+  if (typeof window === "undefined") {
+    return DEFAULT_RECT;
+  }
+  if (isFragment(instance))
+    return getFragmentRect(instance.subTree);
+  else if ((el == null ? void 0 : el.nodeType) === 1)
+    return el == null ? void 0 : el.getBoundingClientRect();
+  else if (instance.subTree.component)
+    return getComponentBoundingRect(instance.subTree.component);
+  else
+    return DEFAULT_RECT;
+}
+init_esm_shims2();
+function getRootElementsFromComponentInstance(instance) {
+  if (isFragment(instance))
+    return getFragmentRootElements(instance.subTree);
+  if (!instance.subTree)
+    return [];
+  return [instance.subTree.el];
+}
+function getFragmentRootElements(vnode) {
+  if (!vnode.children)
+    return [];
+  const list = [];
+  vnode.children.forEach((childVnode) => {
+    if (childVnode.component)
+      list.push(...getRootElementsFromComponentInstance(childVnode.component));
+    else if (childVnode == null ? void 0 : childVnode.el)
+      list.push(childVnode.el);
+  });
+  return list;
+}
+var CONTAINER_ELEMENT_ID = "__vue-devtools-component-inspector__";
+var CARD_ELEMENT_ID = "__vue-devtools-component-inspector__card__";
+var COMPONENT_NAME_ELEMENT_ID = "__vue-devtools-component-inspector__name__";
+var INDICATOR_ELEMENT_ID = "__vue-devtools-component-inspector__indicator__";
+var containerStyles = {
+  display: "block",
+  zIndex: 2147483640,
+  position: "fixed",
+  backgroundColor: "#42b88325",
+  border: "1px solid #42b88350",
+  borderRadius: "5px",
+  transition: "all 0.1s ease-in",
+  pointerEvents: "none"
+};
+var cardStyles = {
+  fontFamily: "Arial, Helvetica, sans-serif",
+  padding: "5px 8px",
+  borderRadius: "4px",
+  textAlign: "left",
+  position: "absolute",
+  left: 0,
+  color: "#e9e9e9",
+  fontSize: "14px",
+  fontWeight: 600,
+  lineHeight: "24px",
+  backgroundColor: "#42b883",
+  boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)"
+};
+var indicatorStyles = {
+  display: "inline-block",
+  fontWeight: 400,
+  fontStyle: "normal",
+  fontSize: "12px",
+  opacity: 0.7
+};
+function getContainerElement() {
+  return document.getElementById(CONTAINER_ELEMENT_ID);
+}
+function getCardElement() {
+  return document.getElementById(CARD_ELEMENT_ID);
+}
+function getIndicatorElement() {
+  return document.getElementById(INDICATOR_ELEMENT_ID);
+}
+function getNameElement() {
+  return document.getElementById(COMPONENT_NAME_ELEMENT_ID);
+}
+function getStyles(bounds) {
+  return {
+    left: `${Math.round(bounds.left * 100) / 100}px`,
+    top: `${Math.round(bounds.top * 100) / 100}px`,
+    width: `${Math.round(bounds.width * 100) / 100}px`,
+    height: `${Math.round(bounds.height * 100) / 100}px`
+  };
+}
+function create(options) {
+  var _a25;
+  const containerEl = document.createElement("div");
+  containerEl.id = (_a25 = options.elementId) != null ? _a25 : CONTAINER_ELEMENT_ID;
+  Object.assign(containerEl.style, {
+    ...containerStyles,
+    ...getStyles(options.bounds),
+    ...options.style
+  });
+  const cardEl = document.createElement("span");
+  cardEl.id = CARD_ELEMENT_ID;
+  Object.assign(cardEl.style, {
+    ...cardStyles,
+    top: options.bounds.top < 35 ? 0 : "-35px"
+  });
+  const nameEl = document.createElement("span");
+  nameEl.id = COMPONENT_NAME_ELEMENT_ID;
+  nameEl.innerHTML = `&lt;${options.name}&gt;&nbsp;&nbsp;`;
+  const indicatorEl = document.createElement("i");
+  indicatorEl.id = INDICATOR_ELEMENT_ID;
+  indicatorEl.innerHTML = `${Math.round(options.bounds.width * 100) / 100} x ${Math.round(options.bounds.height * 100) / 100}`;
+  Object.assign(indicatorEl.style, indicatorStyles);
+  cardEl.appendChild(nameEl);
+  cardEl.appendChild(indicatorEl);
+  containerEl.appendChild(cardEl);
+  document.body.appendChild(containerEl);
+  return containerEl;
+}
+function update(options) {
+  const containerEl = getContainerElement();
+  const cardEl = getCardElement();
+  const nameEl = getNameElement();
+  const indicatorEl = getIndicatorElement();
+  if (containerEl) {
+    Object.assign(containerEl.style, {
+      ...containerStyles,
+      ...getStyles(options.bounds)
+    });
+    Object.assign(cardEl.style, {
+      top: options.bounds.top < 35 ? 0 : "-35px"
+    });
+    nameEl.innerHTML = `&lt;${options.name}&gt;&nbsp;&nbsp;`;
+    indicatorEl.innerHTML = `${Math.round(options.bounds.width * 100) / 100} x ${Math.round(options.bounds.height * 100) / 100}`;
+  }
+}
+function highlight(instance) {
+  const bounds = getComponentBoundingRect(instance);
+  if (!bounds.width && !bounds.height)
+    return;
+  const name = getInstanceName(instance);
+  const container = getContainerElement();
+  container ? update({ bounds, name }) : create({ bounds, name });
+}
+function unhighlight() {
+  const el = getContainerElement();
+  if (el)
+    el.style.display = "none";
+}
+var inspectInstance = null;
+function inspectFn(e) {
+  const target22 = e.target;
+  if (target22) {
+    const instance = target22.__vueParentComponent;
+    if (instance) {
+      inspectInstance = instance;
+      const el = instance.vnode.el;
+      if (el) {
+        const bounds = getComponentBoundingRect(instance);
+        const name = getInstanceName(instance);
+        const container = getContainerElement();
+        container ? update({ bounds, name }) : create({ bounds, name });
+      }
+    }
+  }
+}
+function selectComponentFn(e, cb) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (inspectInstance) {
+    const uniqueComponentId = getUniqueComponentId(inspectInstance);
+    cb(uniqueComponentId);
+  }
+}
+var inspectComponentHighLighterSelectFn = null;
+function cancelInspectComponentHighLighter() {
+  unhighlight();
+  window.removeEventListener("mouseover", inspectFn);
+  window.removeEventListener("click", inspectComponentHighLighterSelectFn, true);
+  inspectComponentHighLighterSelectFn = null;
+}
+function inspectComponentHighLighter() {
+  window.addEventListener("mouseover", inspectFn);
+  return new Promise((resolve) => {
+    function onSelect(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      selectComponentFn(e, (id) => {
+        window.removeEventListener("click", onSelect, true);
+        inspectComponentHighLighterSelectFn = null;
+        window.removeEventListener("mouseover", inspectFn);
+        const el = getContainerElement();
+        if (el)
+          el.style.display = "none";
+        resolve(JSON.stringify({ id }));
+      });
+    }
+    inspectComponentHighLighterSelectFn = onSelect;
+    window.addEventListener("click", onSelect, true);
+  });
+}
+function scrollToComponent(options) {
+  const instance = getComponentInstance(activeAppRecord.value, options.id);
+  if (instance) {
+    const [el] = getRootElementsFromComponentInstance(instance);
+    if (typeof el.scrollIntoView === "function") {
+      el.scrollIntoView({
+        behavior: "smooth"
+      });
+    } else {
+      const bounds = getComponentBoundingRect(instance);
+      const scrollTarget = document.createElement("div");
+      const styles = {
+        ...getStyles(bounds),
+        position: "absolute"
+      };
+      Object.assign(scrollTarget.style, styles);
+      document.body.appendChild(scrollTarget);
+      scrollTarget.scrollIntoView({
+        behavior: "smooth"
+      });
+      setTimeout(() => {
+        document.body.removeChild(scrollTarget);
+      }, 2e3);
+    }
+    setTimeout(() => {
+      const bounds = getComponentBoundingRect(instance);
+      if (bounds.width || bounds.height) {
+        const name = getInstanceName(instance);
+        const el2 = getContainerElement();
+        el2 ? update({ ...options, name, bounds }) : create({ ...options, name, bounds });
+        setTimeout(() => {
+          if (el2)
+            el2.style.display = "none";
+        }, 1500);
+      }
+    }, 1200);
+  }
+}
+init_esm_shims2();
+var _a2;
+var _b;
+(_b = (_a2 = target).__VUE_DEVTOOLS_COMPONENT_INSPECTOR_ENABLED__) != null ? _b : _a2.__VUE_DEVTOOLS_COMPONENT_INSPECTOR_ENABLED__ = true;
+function waitForInspectorInit(cb) {
+  let total = 0;
+  const timer = setInterval(() => {
+    if (target.__VUE_INSPECTOR__) {
+      clearInterval(timer);
+      total += 30;
+      cb();
+    }
+    if (total >= /* 5s */
+    5e3)
+      clearInterval(timer);
+  }, 30);
+}
+function setupInspector() {
+  const inspector = target.__VUE_INSPECTOR__;
+  const _openInEditor = inspector.openInEditor;
+  inspector.openInEditor = async (...params) => {
+    inspector.disable();
+    _openInEditor(...params);
+  };
+}
+function getComponentInspector() {
+  return new Promise((resolve) => {
+    function setup() {
+      setupInspector();
+      resolve(target.__VUE_INSPECTOR__);
+    }
+    if (!target.__VUE_INSPECTOR__) {
+      waitForInspectorInit(() => {
+        setup();
+      });
+    } else {
+      setup();
+    }
+  });
+}
+init_esm_shims2();
+init_esm_shims2();
 function isReadonly(value) {
   return !!(value && value[
     "__v_isReadonly"
@@ -2128,73 +2533,6 @@ function toRaw(observed) {
   return raw ? toRaw(raw) : observed;
 }
 var Fragment = Symbol.for("v-fgt");
-init_esm_shims2();
-function getComponentTypeName(options) {
-  var _a25;
-  const name = options.name || options._componentTag || options.__VUE_DEVTOOLS_COMPONENT_GUSSED_NAME__ || options.__name;
-  if (name === "index" && ((_a25 = options.__file) == null ? void 0 : _a25.endsWith("index.vue"))) {
-    return "";
-  }
-  return name;
-}
-function getComponentFileName(options) {
-  const file = options.__file;
-  if (file)
-    return classify(basename(file, ".vue"));
-}
-function saveComponentGussedName(instance, name) {
-  instance.type.__VUE_DEVTOOLS_COMPONENT_GUSSED_NAME__ = name;
-  return name;
-}
-function getAppRecord(instance) {
-  if (instance.__VUE_DEVTOOLS_NEXT_APP_RECORD__)
-    return instance.__VUE_DEVTOOLS_NEXT_APP_RECORD__;
-  else if (instance.root)
-    return instance.appContext.app.__VUE_DEVTOOLS_NEXT_APP_RECORD__;
-}
-async function getComponentId(options) {
-  const { app, uid, instance } = options;
-  try {
-    if (instance.__VUE_DEVTOOLS_NEXT_UID__)
-      return instance.__VUE_DEVTOOLS_NEXT_UID__;
-    const appRecord = await getAppRecord(app);
-    if (!appRecord)
-      return null;
-    const isRoot = appRecord.rootInstance === instance;
-    return `${appRecord.id}:${isRoot ? "root" : uid}`;
-  } catch (e) {
-  }
-}
-function isFragment(instance) {
-  var _a25;
-  const subTreeType = (_a25 = instance.subTree) == null ? void 0 : _a25.type;
-  return subTreeType === Fragment;
-}
-function getInstanceName(instance) {
-  var _a25, _b25, _c;
-  const name = getComponentTypeName((instance == null ? void 0 : instance.type) || {});
-  if (name)
-    return name;
-  if ((instance == null ? void 0 : instance.root) === instance)
-    return "Root";
-  for (const key in (_b25 = (_a25 = instance.parent) == null ? void 0 : _a25.type) == null ? void 0 : _b25.components) {
-    if (instance.parent.type.components[key] === (instance == null ? void 0 : instance.type))
-      return saveComponentGussedName(instance, key);
-  }
-  for (const key in (_c = instance.appContext) == null ? void 0 : _c.components) {
-    if (instance.appContext.components[key] === (instance == null ? void 0 : instance.type))
-      return saveComponentGussedName(instance, key);
-  }
-  const fileName = getComponentFileName((instance == null ? void 0 : instance.type) || {});
-  if (fileName)
-    return fileName;
-  return "Anonymous Component";
-}
-function getComponentInstance(appRecord, instanceId) {
-  instanceId = instanceId || `${appRecord.id}:root`;
-  const instance = appRecord.instanceMap.get(instanceId);
-  return instance || appRecord.instanceMap.get(":root");
-}
 var StateEditor = class {
   constructor() {
     this.refEditor = new RefStateEditor();
@@ -2314,357 +2652,11 @@ var RefStateEditor = class {
 };
 var stateEditor = new StateEditor();
 init_esm_shims2();
-function getRootElementsFromComponentInstance(instance) {
-  if (isFragment(instance))
-    return getFragmentRootElements(instance.subTree);
-  if (!instance.subTree)
-    return [];
-  return [instance.subTree.el];
-}
-function getFragmentRootElements(vnode) {
-  if (!vnode.children)
-    return [];
-  const list = [];
-  vnode.children.forEach((childVnode) => {
-    if (childVnode.component)
-      list.push(...getRootElementsFromComponentInstance(childVnode.component));
-    else if (childVnode == null ? void 0 : childVnode.el)
-      list.push(childVnode.el);
-  });
-  return list;
-}
-init_esm_shims2();
-init_esm_shims2();
-function createRect() {
-  const rect = {
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    get width() {
-      return rect.right - rect.left;
-    },
-    get height() {
-      return rect.bottom - rect.top;
-    }
-  };
-  return rect;
-}
-var range;
-function getTextRect(node) {
-  if (!range)
-    range = document.createRange();
-  range.selectNode(node);
-  return range.getBoundingClientRect();
-}
-function getFragmentRect(vnode) {
-  const rect = createRect();
-  if (!vnode.children)
-    return rect;
-  for (let i = 0, l = vnode.children.length; i < l; i++) {
-    const childVnode = vnode.children[i];
-    let childRect;
-    if (childVnode.component) {
-      childRect = getComponentBoundingRect(childVnode.component);
-    } else if (childVnode.el) {
-      const el = childVnode.el;
-      if (el.nodeType === 1 || el.getBoundingClientRect)
-        childRect = el.getBoundingClientRect();
-      else if (el.nodeType === 3 && el.data.trim())
-        childRect = getTextRect(el);
-    }
-    if (childRect)
-      mergeRects(rect, childRect);
-  }
-  return rect;
-}
-function mergeRects(a, b) {
-  if (!a.top || b.top < a.top)
-    a.top = b.top;
-  if (!a.bottom || b.bottom > a.bottom)
-    a.bottom = b.bottom;
-  if (!a.left || b.left < a.left)
-    a.left = b.left;
-  if (!a.right || b.right > a.right)
-    a.right = b.right;
-  return a;
-}
-var DEFAULT_RECT = {
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  width: 0,
-  height: 0
-};
-function getComponentBoundingRect(instance) {
-  const el = instance.subTree.el;
-  if (typeof window === "undefined") {
-    return DEFAULT_RECT;
-  }
-  if (isFragment(instance))
-    return getFragmentRect(instance.subTree);
-  else if ((el == null ? void 0 : el.nodeType) === 1)
-    return el == null ? void 0 : el.getBoundingClientRect();
-  else if (instance.subTree.component)
-    return getComponentBoundingRect(instance.subTree.component);
-  else
-    return DEFAULT_RECT;
-}
-var CONTAINER_ELEMENT_ID = "__vue-devtools-component-inspector__";
-var CARD_ELEMENT_ID = "__vue-devtools-component-inspector__card__";
-var COMPONENT_NAME_ELEMENT_ID = "__vue-devtools-component-inspector__name__";
-var INDICATOR_ELEMENT_ID = "__vue-devtools-component-inspector__indicator__";
-var containerStyles = {
-  display: "block",
-  zIndex: 2147483640,
-  position: "fixed",
-  backgroundColor: "#42b88325",
-  border: "1px solid #42b88350",
-  borderRadius: "5px",
-  transition: "all 0.1s ease-in",
-  pointerEvents: "none"
-};
-var cardStyles = {
-  fontFamily: "Arial, Helvetica, sans-serif",
-  padding: "5px 8px",
-  borderRadius: "4px",
-  textAlign: "left",
-  position: "absolute",
-  left: 0,
-  color: "#e9e9e9",
-  fontSize: "14px",
-  fontWeight: 600,
-  lineHeight: "24px",
-  backgroundColor: "#42b883",
-  boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)"
-};
-var indicatorStyles = {
-  display: "inline-block",
-  fontWeight: 400,
-  fontStyle: "normal",
-  fontSize: "12px",
-  opacity: 0.7
-};
-function getContainerElement() {
-  return document.getElementById(CONTAINER_ELEMENT_ID);
-}
-function getCardElement() {
-  return document.getElementById(CARD_ELEMENT_ID);
-}
-function getIndicatorElement() {
-  return document.getElementById(INDICATOR_ELEMENT_ID);
-}
-function getNameElement() {
-  return document.getElementById(COMPONENT_NAME_ELEMENT_ID);
-}
-function getStyles(bounds) {
-  return {
-    left: `${Math.round(bounds.left * 100) / 100}px`,
-    top: `${Math.round(bounds.top * 100) / 100}px`,
-    width: `${Math.round(bounds.width * 100) / 100}px`,
-    height: `${Math.round(bounds.height * 100) / 100}px`
-  };
-}
-function create(options) {
-  var _a25;
-  const containerEl = document.createElement("div");
-  containerEl.id = (_a25 = options.elementId) != null ? _a25 : CONTAINER_ELEMENT_ID;
-  Object.assign(containerEl.style, {
-    ...containerStyles,
-    ...getStyles(options.bounds),
-    ...options.style
-  });
-  const cardEl = document.createElement("span");
-  cardEl.id = CARD_ELEMENT_ID;
-  Object.assign(cardEl.style, {
-    ...cardStyles,
-    top: options.bounds.top < 35 ? 0 : "-35px"
-  });
-  const nameEl = document.createElement("span");
-  nameEl.id = COMPONENT_NAME_ELEMENT_ID;
-  nameEl.innerHTML = `&lt;${options.name}&gt;&nbsp;&nbsp;`;
-  const indicatorEl = document.createElement("i");
-  indicatorEl.id = INDICATOR_ELEMENT_ID;
-  indicatorEl.innerHTML = `${Math.round(options.bounds.width * 100) / 100} x ${Math.round(options.bounds.height * 100) / 100}`;
-  Object.assign(indicatorEl.style, indicatorStyles);
-  cardEl.appendChild(nameEl);
-  cardEl.appendChild(indicatorEl);
-  containerEl.appendChild(cardEl);
-  document.body.appendChild(containerEl);
-  return containerEl;
-}
-function update(options) {
-  const containerEl = getContainerElement();
-  const cardEl = getCardElement();
-  const nameEl = getNameElement();
-  const indicatorEl = getIndicatorElement();
-  if (containerEl) {
-    Object.assign(containerEl.style, {
-      ...containerStyles,
-      ...getStyles(options.bounds)
-    });
-    Object.assign(cardEl.style, {
-      top: options.bounds.top < 35 ? 0 : "-35px"
-    });
-    nameEl.innerHTML = `&lt;${options.name}&gt;&nbsp;&nbsp;`;
-    indicatorEl.innerHTML = `${Math.round(options.bounds.width * 100) / 100} x ${Math.round(options.bounds.height * 100) / 100}`;
-  }
-}
-function highlight(instance) {
-  const bounds = getComponentBoundingRect(instance);
-  const name = getInstanceName(instance);
-  const container = getContainerElement();
-  container ? update({ bounds, name }) : create({ bounds, name });
-}
-function unhighlight() {
-  const el = getContainerElement();
-  if (el)
-    el.style.display = "none";
-}
-var inspectInstance = null;
-function inspectFn(e) {
-  const target22 = e.target;
-  if (target22) {
-    const instance = target22.__vueParentComponent;
-    if (instance) {
-      inspectInstance = instance;
-      const el = instance.vnode.el;
-      if (el) {
-        const bounds = getComponentBoundingRect(instance);
-        const name = getInstanceName(instance);
-        const container = getContainerElement();
-        container ? update({ bounds, name }) : create({ bounds, name });
-      }
-    }
-  }
-}
-function selectComponentFn(e, cb) {
-  var _a25;
-  e.preventDefault();
-  e.stopPropagation();
-  if (inspectInstance) {
-    const app = (_a25 = activeAppRecord.value) == null ? void 0 : _a25.app;
-    getComponentId({
-      app,
-      uid: app.uid,
-      instance: inspectInstance
-    }).then((id) => {
-      cb(id);
-    });
-  }
-}
-var inspectComponentHighLighterSelectFn = null;
-function cancelInspectComponentHighLighter() {
-  unhighlight();
-  window.removeEventListener("mouseover", inspectFn);
-  window.removeEventListener("click", inspectComponentHighLighterSelectFn, true);
-  inspectComponentHighLighterSelectFn = null;
-}
-function inspectComponentHighLighter() {
-  window.addEventListener("mouseover", inspectFn);
-  return new Promise((resolve) => {
-    function onSelect(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      selectComponentFn(e, (id) => {
-        window.removeEventListener("click", onSelect, true);
-        inspectComponentHighLighterSelectFn = null;
-        window.removeEventListener("mouseover", inspectFn);
-        const el = getContainerElement();
-        if (el)
-          el.style.display = "none";
-        resolve(JSON.stringify({ id }));
-      });
-    }
-    inspectComponentHighLighterSelectFn = onSelect;
-    window.addEventListener("click", onSelect, true);
-  });
-}
-function scrollToComponent(options) {
-  const instance = getComponentInstance(activeAppRecord.value, options.id);
-  if (instance) {
-    const [el] = getRootElementsFromComponentInstance(instance);
-    if (typeof el.scrollIntoView === "function") {
-      el.scrollIntoView({
-        behavior: "smooth"
-      });
-    } else {
-      const bounds = getComponentBoundingRect(instance);
-      const scrollTarget = document.createElement("div");
-      const styles = {
-        ...getStyles(bounds),
-        position: "absolute"
-      };
-      Object.assign(scrollTarget.style, styles);
-      document.body.appendChild(scrollTarget);
-      scrollTarget.scrollIntoView({
-        behavior: "smooth"
-      });
-      setTimeout(() => {
-        document.body.removeChild(scrollTarget);
-      }, 2e3);
-    }
-    setTimeout(() => {
-      const bounds = getComponentBoundingRect(instance);
-      if (bounds.width || bounds.height) {
-        const name = getInstanceName(instance);
-        const el2 = getContainerElement();
-        el2 ? update({ ...options, name, bounds }) : create({ ...options, name, bounds });
-        setTimeout(() => {
-          if (el2)
-            el2.style.display = "none";
-        }, 1500);
-      }
-    }, 1200);
-  }
-}
-init_esm_shims2();
-var _a2;
-var _b;
-(_b = (_a2 = target).__VUE_DEVTOOLS_COMPONENT_INSPECTOR_ENABLED__) != null ? _b : _a2.__VUE_DEVTOOLS_COMPONENT_INSPECTOR_ENABLED__ = true;
-function waitForInspectorInit(cb) {
-  let total = 0;
-  const timer = setInterval(() => {
-    if (target.__VUE_INSPECTOR__) {
-      clearInterval(timer);
-      total += 30;
-      cb();
-    }
-    if (total >= /* 5s */
-    5e3)
-      clearInterval(timer);
-  }, 30);
-}
-function setupInspector() {
-  const inspector = target.__VUE_INSPECTOR__;
-  const _openInEditor = inspector.openInEditor;
-  inspector.openInEditor = async (...params) => {
-    inspector.disable();
-    _openInEditor(...params);
-  };
-}
-function getComponentInspector() {
-  return new Promise((resolve) => {
-    function setup() {
-      setupInspector();
-      resolve(target.__VUE_INSPECTOR__);
-    }
-    if (!target.__VUE_INSPECTOR__) {
-      waitForInspectorInit(() => {
-        setup();
-      });
-    } else {
-      setup();
-    }
-  });
-}
-init_esm_shims2();
 init_esm_shims2();
 init_esm_shims2();
 var TIMELINE_LAYERS_STATE_STORAGE_ID = "__VUE_DEVTOOLS_KIT_TIMELINE_LAYERS_STATE__";
 function getTimelineLayersStateFromStorage() {
-  if (!isBrowser || typeof localStorage === "undefined") {
+  if (!isBrowser || typeof localStorage === "undefined" || localStorage === null) {
     return {
       recordingState: false,
       mouseEventEnabled: false,
@@ -2696,6 +2688,7 @@ var devtoolsTimelineLayers = new Proxy(target.__VUE_DEVTOOLS_KIT_TIMELINE_LAYERS
   }
 });
 function addTimelineLayer(options, descriptor) {
+  devtoolsState.timelineLayersState[descriptor.id] = false;
   devtoolsTimelineLayers.push({
     ...options,
     descriptorId: descriptor.id,
@@ -2714,9 +2707,12 @@ var callInspectorUpdatedHook = debounce(() => {
   devtoolsContext.hooks.callHook("sendInspectorToClient", getActiveInspectors());
 });
 function addInspector(inspector, descriptor) {
+  var _a25, _b25;
   devtoolsInspector.push({
     options: inspector,
     descriptor,
+    treeFilterPlaceholder: (_a25 = inspector.treeFilterPlaceholder) != null ? _a25 : "Search tree...",
+    stateFilterPlaceholder: (_b25 = inspector.stateFilterPlaceholder) != null ? _b25 : "Search state...",
     treeFilter: "",
     selectedNodeId: "",
     appRecord: getAppRecord(descriptor.app)
@@ -2784,9 +2780,9 @@ function createDevToolsCtxHooks() {
   hooks2.hook("addInspector", ({ inspector, plugin }) => {
     addInspector(inspector, plugin.descriptor);
   });
-  hooks2.hook("sendInspectorTree", async ({ inspectorId, plugin }) => {
+  const debounceSendInspectorTree = debounce(async ({ inspectorId, plugin }) => {
     var _a25;
-    if (!inspectorId || !((_a25 = plugin == null ? void 0 : plugin.descriptor) == null ? void 0 : _a25.app))
+    if (!inspectorId || !((_a25 = plugin == null ? void 0 : plugin.descriptor) == null ? void 0 : _a25.app) || devtoolsState.highPerfModeEnabled)
       return;
     const inspector = getInspector(inspectorId, plugin.descriptor.app);
     const _payload = {
@@ -2815,10 +2811,11 @@ function createDevToolsCtxHooks() {
       "sendInspectorTreeToClient"
       /* SEND_INSPECTOR_TREE_TO_CLIENT */
     );
-  });
-  hooks2.hook("sendInspectorState", async ({ inspectorId, plugin }) => {
+  }, 120);
+  hooks2.hook("sendInspectorTree", debounceSendInspectorTree);
+  const debounceSendInspectorState = debounce(async ({ inspectorId, plugin }) => {
     var _a25;
-    if (!inspectorId || !((_a25 = plugin == null ? void 0 : plugin.descriptor) == null ? void 0 : _a25.app))
+    if (!inspectorId || !((_a25 = plugin == null ? void 0 : plugin.descriptor) == null ? void 0 : _a25.app) || devtoolsState.highPerfModeEnabled)
       return;
     const inspector = getInspector(inspectorId, plugin.descriptor.app);
     const _payload = {
@@ -2853,7 +2850,8 @@ function createDevToolsCtxHooks() {
       "sendInspectorStateToClient"
       /* SEND_INSPECTOR_STATE_TO_CLIENT */
     );
-  });
+  }, 120);
+  hooks2.hook("sendInspectorState", debounceSendInspectorState);
   hooks2.hook("customInspectorSelectNode", ({ inspectorId, nodeId, plugin }) => {
     const inspector = getInspector(inspectorId, plugin.descriptor.app);
     if (!inspector)
@@ -2864,6 +2862,10 @@ function createDevToolsCtxHooks() {
     addTimelineLayer(options, plugin.descriptor);
   });
   hooks2.hook("timelineEventAdded", ({ options, plugin }) => {
+    var _a25;
+    const internalLayerIds = ["performance", "component-event", "keyboard", "mouse"];
+    if (devtoolsState.highPerfModeEnabled || !((_a25 = devtoolsState.timelineLayersState) == null ? void 0 : _a25[plugin.descriptor.id]) && !internalLayerIds.includes(options.layerId))
+      return;
     hooks2.callHookWith(
       async (callbacks) => {
         await Promise.all(callbacks.map((cb) => cb(options)));
@@ -3242,6 +3244,9 @@ var DevToolsV6PluginAPI = class {
   // component inspector
   notifyComponentUpdate(instance) {
     var _a25;
+    if (devtoolsState.highPerfModeEnabled) {
+      return;
+    }
     const inspector = getActiveInspectors().find((i) => i.packageName === this.plugin.descriptor.packageName);
     if (inspector == null ? void 0 : inspector.id) {
       if (instance) {
@@ -3269,22 +3274,37 @@ var DevToolsV6PluginAPI = class {
     }
   }
   sendInspectorTree(inspectorId) {
+    if (devtoolsState.highPerfModeEnabled) {
+      return;
+    }
     this.hooks.callHook("sendInspectorTree", { inspectorId, plugin: this.plugin });
   }
   sendInspectorState(inspectorId) {
+    if (devtoolsState.highPerfModeEnabled) {
+      return;
+    }
     this.hooks.callHook("sendInspectorState", { inspectorId, plugin: this.plugin });
   }
   selectInspectorNode(inspectorId, nodeId) {
     this.hooks.callHook("customInspectorSelectNode", { inspectorId, nodeId, plugin: this.plugin });
   }
+  visitComponentTree(payload) {
+    return this.hooks.callHook("visitComponentTree", payload);
+  }
   // timeline
   now() {
+    if (devtoolsState.highPerfModeEnabled) {
+      return 0;
+    }
     return Date.now();
   }
   addTimelineLayer(options) {
     this.hooks.callHook("timelineLayerAdded", { options, plugin: this.plugin });
   }
   addTimelineEvent(options) {
+    if (devtoolsState.highPerfModeEnabled) {
+      return;
+    }
     this.hooks.callHook("timelineEventAdded", { options, plugin: this.plugin });
   }
   // settings
@@ -3362,9 +3382,13 @@ function callDevToolsPluginSetupFn(plugin, app) {
   }
   setupFn(api);
 }
-function registerDevToolsPlugin(app) {
-  if (target.__VUE_DEVTOOLS_KIT__REGISTERED_PLUGIN_APPS__.has(app))
+function registerDevToolsPlugin(app, options) {
+  if (target.__VUE_DEVTOOLS_KIT__REGISTERED_PLUGIN_APPS__.has(app)) {
     return;
+  }
+  if (devtoolsState.highPerfModeEnabled && !(options == null ? void 0 : options.inspectingComponent)) {
+    return;
+  }
   target.__VUE_DEVTOOLS_KIT__REGISTERED_PLUGIN_APPS__.add(app);
   devtoolsPluginBuffer.forEach((plugin) => {
     callDevToolsPluginSetupFn(plugin, app);
@@ -3450,6 +3474,8 @@ function normalizeRouterInfo(appRecord, activeAppRecord2) {
     if (((_a25 = activeAppRecord2.value) == null ? void 0 : _a25.app) !== appRecord.app)
       return;
     init();
+    if (devtoolsState.highPerfModeEnabled)
+      return;
     devtoolsContext.hooks.callHook("routerInfoUpdated", { state: target[ROUTER_INFO_KEY] });
   }, 200));
 }
@@ -3545,14 +3571,14 @@ function createDevToolsApi(hooks2) {
     // get vue inspector
     getVueInspector: getComponentInspector,
     // toggle app
-    toggleApp(id) {
+    toggleApp(id, options) {
       const appRecord = devtoolsAppRecords.value.find((record) => record.id === id);
       if (appRecord) {
         setActiveAppRecordId(id);
         setActiveAppRecord(appRecord);
         normalizeRouterInfo(appRecord, activeAppRecord);
         callInspectorUpdatedHook();
-        registerDevToolsPlugin(appRecord.app);
+        registerDevToolsPlugin(appRecord.app, options);
       }
     },
     // inspect dom
@@ -3624,6 +3650,9 @@ function onDevToolsClientConnected(fn) {
 init_esm_shims2();
 function toggleHighPerfMode(state) {
   devtoolsState.highPerfModeEnabled = state != null ? state : !devtoolsState.highPerfModeEnabled;
+  if (!state && activeAppRecord.value) {
+    registerDevToolsPlugin(activeAppRecord.value.app);
+  }
 }
 init_esm_shims2();
 init_esm_shims2();
@@ -3957,7 +3986,7 @@ var classRule = compositeTransformation(isInstanceOfRegisteredClass, (clazz, sup
 }, (v, a, superJson) => {
   const clazz = superJson.classRegistry.getValue(a[1]);
   if (!clazz) {
-    throw new Error("Trying to deserialize unknown class - check https://github.com/blitz-js/superjson/issues/116#issuecomment-773996564");
+    throw new Error(`Trying to deserialize unknown class '${a[1]}' - check https://github.com/blitz-js/superjson/issues/116#issuecomment-773996564`);
   }
   return Object.assign(Object.create(clazz.prototype), v);
 });
@@ -4022,6 +4051,8 @@ var untransformValue = (json, type, superJson) => {
 };
 init_esm_shims2();
 var getNthKey = (value, n) => {
+  if (n > value.size)
+    throw new Error("index out of bounds");
   const keys = value.keys();
   while (n > 0) {
     keys.next();
