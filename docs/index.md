@@ -21,8 +21,8 @@ hero:
 features:
   - title: 💰完全免费
     details: 题库搜索，网页脚本完全免费
-  - title: 🔐安全稳定
-    details: 网站不用登录,随开随用
+  - title: ✨DeepSeek
+    details: 支持DeepSeek答题
   - title: ⏩一键刷课
     details: 自动完成视频播放，完成课件
 ---
