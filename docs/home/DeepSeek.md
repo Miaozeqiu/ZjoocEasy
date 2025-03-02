@@ -7,8 +7,8 @@
 
 ## 2️⃣下载并运行DeepSeekProxy
 
-- [蓝奏云](https://wwyl.lanzouv.com/iSFrB2p59ohi)    
-- [Gitee](https://gitee.com/m0zey/DeepSeekProxy/releases/tag/0.6)
+- [蓝奏云](https://wwyl.lanzouv.com/b00ocrzzje)    密码：43so
+- [Gitee](https://gitee.com/m0zey/DeepSeekProxy/releases) 下载.7z文件
 
 ![images/DeepSeekProxy.png](/images/DeepSeekProxy.png)
 填入相应平台的API Key点击保存即可
