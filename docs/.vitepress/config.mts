@@ -32,6 +32,7 @@ export default defineConfig({
           { text: '首页', link: '/home/about' },
           { text: '插件安装', link: '/home/web-plugin' },
           { text: '✨使用DeepSeek', link: '/home/DeepSeek'},
+          { text: '✨获取API Key', link: '/home/GetAPIKey'},
           { text: '常见问题', link: '/home/frequently-asked-questions'},
           { text: '私人题库', link: '/home/private-question-bank' },
           { text: '日志', link: '/home/log' },

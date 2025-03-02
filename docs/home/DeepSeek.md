@@ -2,36 +2,28 @@
 
 >✨在1.61以上的版本中，插件支持调用DeepSeek的API进行答案解析，以下是使用方法
 
+## 1️⃣获取API Key
+[点击查看教程](./GetAPIKey.md)
 
-## 使用方法
+## 2️⃣下载并运行DeepSeekProxy
 
-### 1️⃣打开[DeepSeek](https://www.deepseek.com/)的官网，注册并登录，获取API Key。
->目前DeepSeek已经不再赠送10元的免费额度，需要请自行充值。DeepSeek的API定价目前是各家AI产品中最低的。
->在我对脚本的开发测试过程中，120次调用(即题目查询)仅仅消耗了0.15元
-
-![images/DeepSeek_s1.png](/images/DeepSeek_s1.png)
-
-![images/DeepSeek_s2.png](/images/DeepSeek_s2.png)
-
-![images/DeepSeek_s3.png](/images/DeepSeek_s3.png)
-
-### 2️⃣在插件中填入API Key
-![images/ApiKeySetting.png](/images/ApiKeySetting.png)
-
-### 3️⃣下载并运行DeepSeekProxy
->DeepSeek的API是无法跨域的，也就是不能在一个网站中进行请求，因此需要代理服务器，我们提供了一个简单的代理服务器，可以在本地运行。
-
-下载DeepSeekProxy：
-
-· [蓝奏云](https://wwyl.lanzouv.com/iSFrB2p59ohi)
-
-· [Gitee](https://gitee.com/m0zey/DeepSeekProxy/releases/tag/0.6)
-
-运行DeepSeekProxy：
+- [蓝奏云](https://wwyl.lanzouv.com/iSFrB2p59ohi)    
+- [Gitee](https://gitee.com/m0zey/DeepSeekProxy/releases/tag/0.6)
 
 ![images/DeepSeekProxy.png](/images/DeepSeekProxy.png)
+填入相应平台的API Key点击保存即可
 
-🥳恭喜你完成所有操作，在显示答案后，点击DeepSeek的图标就可以调用DeepSeek了，使用时需要保持程序后台运行
+## 3️⃣为什么需要DeepSeekProxy？
+
+因为目前所有的API都是不能跨域的，也就是说不能在一个网站中进行请求,所以需要搭建`代理服务器`。
+![浏览器拦截](/images/cross_s1.png)
+![浏览器拦截](/images/cross_s2.png)
+
+由于插件是公益性质的，难以承担高性能服务器产生费用，如果使用我们目前的服务器资源搭建代理服务器，会造成极大的延迟与不稳定
+
+同时，如果使用我们的服务器，在代理请求过程中会传递API密钥，一旦我们的服务器遭受攻击，难以保证用户数据的安全
+
+因此，我们选择开发`DeepSeekProxy`，它是一个开源的代理服务器软件，源码发布在了[Gitee](https://gitee.com/m0zey/DeepSeekProxy)，它运行在你的电脑上，代理请求DeepSeek的API，转发AI生成的回答给在浙学网课助手。在运行过程中不会向我们在内的任何第三方网站传递密钥数据，保证了密钥安全
 
 
 
