@@ -1,8 +1,14 @@
 # DeepSeekProxy
 
 >✨在1.61以上的版本中，插件支持调用DeepSeek的API进行答案解析  
->🔓每个用户每日有50次的限额，在不使用DeepSeekProxy的情况下  
->🖥️如果想使用自己的API Key，需要自行搭建DeepSeekProxy
+>🔓在不使用DeepSeekProxy的情况下，每个用户每日有50次的限额  
+>🖥️如果想要无限制地调用，需要使用DeepSeekProxy
+
+:::warning
+
+DeepSeekProxy是开源软件，不会上传用户的API Key
+
+:::
 
 ## 1️⃣获取API Key
 [点击查看教程](./GetAPIKey.md)
@@ -21,11 +27,9 @@
 ![浏览器拦截](/images/cross_s1.png)
 ![浏览器拦截](/images/cross_s2.png)
 
-由于插件是公益性质的，难以承担高性能服务器产生费用，如果使用我们目前的服务器资源搭建代理服务器，会造成极大的延迟与不稳定
+用户每日50次的非DeepSeekProxy调用使用的是我们服务器的资源，因此有限制。而使用DeepSeekProxy则相当于直接与大模型平台进行交互，完全不经过我们的服务器，不会对我们的服务器造成压力，所以没有限制。
 
-同时，如果使用我们的服务器，在代理请求过程中会传递API密钥，一旦我们的服务器遭受攻击，难以保证用户数据的安全
 
-因此，我们选择开发`DeepSeekProxy`，它是一个开源的代理服务器软件，源码发布在了[Gitee](https://gitee.com/m0zey/DeepSeekProxy)，它运行在你的电脑上，代理请求DeepSeek的API，转发AI生成的回答给在浙学网课助手。在运行过程中不会向我们在内的任何第三方网站传递密钥数据，保证了密钥安全
 
 
 
