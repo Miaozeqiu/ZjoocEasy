@@ -23,7 +23,7 @@ export default defineConfig({
     ],
     footer: {
       message: "",
-      copyright: "Copyright © 2024 邱嘉诚 在浙学网课助手|题库",
+      copyright: "Copyright © 2024 M0zey 在浙学网课助手|题库",
     },
     sidebar: [
       {
@@ -31,7 +31,7 @@ export default defineConfig({
         items: [
           { text: '首页', link: '/home/about' },
           { text: '插件安装', link: '/home/web-plugin' },
-          { text: '✨使用DeepSeek', link: '/home/DeepSeek'},
+          { text: '✨DeepSeekProxy', link: '/home/DeepSeek'},
           { text: '✨获取API Key', link: '/home/GetAPIKey'},
           { text: '常见问题', link: '/home/frequently-asked-questions'},
           { text: '私人题库', link: '/home/private-question-bank' },

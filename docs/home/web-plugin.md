@@ -31,8 +31,8 @@
 ### 2️⃣安装脚本
 ::: tip
 
-打开脚本的[脚本猫页面](https://scriptcat.org/zh-CN/script-show-page/2522)，安装脚本
-![images/在浙学_脚本猫png](/images/在浙学_脚本猫.png)
+打开脚本的[脚本猫页面](https://scriptcat.org/zh-CN/script-show-page/2522)，安装脚本 [打不开?](#🤯脚本猫打不开怎么办)
+![images/在浙学_脚本猫png](/images/在浙学_脚本猫.png) 
 :::
 
 ### 3️⃣打开浏览器开发者模式
@@ -46,6 +46,13 @@
 
 第一次使用脚本时需要登录以使用显示答案功能，除该功能外，其余功能都是无需登录的
 :::
+
+## 🤯脚本猫打不开怎么办？
+你可以复制下面的代码，然后，在脚本猫处新建脚本，这与步骤2的效果是相同的
+[点击查看](/script.txt)
+
+![images/newscript.png](/images/newscript.png)
+
 
 <div align="center">
 🥳恭喜你成功安装脚本

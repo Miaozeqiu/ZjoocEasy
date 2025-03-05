@@ -1,6 +1,8 @@
-# 使用DeepSeek
+# DeepSeekProxy
 
->✨在1.61以上的版本中，插件支持调用DeepSeek的API进行答案解析，以下是使用方法
+>✨在1.61以上的版本中，插件支持调用DeepSeek的API进行答案解析  
+>🔓每个用户每日有50次的限额，在不使用DeepSeekProxy的情况下  
+>🖥️如果想使用自己的API Key，需要自行搭建DeepSeekProxy
 
 ## 1️⃣获取API Key
 [点击查看教程](./GetAPIKey.md)
