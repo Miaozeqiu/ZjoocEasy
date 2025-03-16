@@ -1,10 +1,14 @@
 
 # 本站的更新日志
 
+## 2025/3/16
+1. <span class="improve">改进</span> 在点击自动播放时,会跳出任务列表选项
+2. 3. <span class="new">新增</span> 课件速刷功能
+
 ## 2025/3/05
 1. <span class="fix">修复</span> 页面刷新时登陆状态失效的问题
 2. <span class="fix">修复</span> 复制功能失效问题
-2. <span class="new">新增</span> 每个用户每日有50次使用DeepSeek的限额，DeepSeekProxy作为可选项
+2. <span class="improve">改进</span> 每个用户每日有50次使用DeepSeek的限额，DeepSeekProxy作为可选项
 ## 2025/3/02
 1. <span class="fix">修复</span> 一些页面下，“上一题“，”下一题“按钮失效的问题
 2. <span class="new">新增</span> 添加了对DeepSeek的支持

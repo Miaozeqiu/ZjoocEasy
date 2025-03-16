@@ -31,6 +31,7 @@ export default defineConfig({
         items: [
           { text: '首页', link: '/home/about' },
           { text: '插件安装', link: '/home/web-plugin' },
+          { text: '视频速刷', link: '/home/QuickCoursewareBrowsing' },
           { text: '✨DeepSeekProxy', link: '/home/DeepSeek'},
           { text: '✨获取API Key', link: '/home/GetAPIKey'},
           { text: '常见问题', link: '/home/frequently-asked-questions'},

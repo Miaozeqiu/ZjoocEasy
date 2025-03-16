@@ -1,4 +1,6 @@
 # 获取 API Key
+>本站免费提供的`硅基流动ApiKey`  
+sk-dbmhcbzqgjklpzmbgikrevomkbregpsjapjbwzuxnhyuetqd
 
 以下是不同平台获取 API Key 的方法：
 
@@ -6,7 +8,7 @@
 | --- | --- | --- | --- |
 | DeepSeek官方| [点击查看](#deepseek官方)| 新用户没有免费Token | [DeepSeek API](https://platform.deepseek.com/) |
 | 阿里百炼(推荐) | [点击查看](#阿里百炼) | 新用户有8元左右赠送Token，学生通过 [云工开物计划](https://university.aliyun.com/) 赠送300余额 | [阿里百炼](https://bailian.console.aliyun.com/) |
-| 硅基流动 | [点击查看](#硅基流动) | 新用户14元免费额度 | [硅基流动](https://cloud.siliconflow.cn/) |
+| 硅基流动 | [点击查看](#硅基流动) | 新用户14元免费额度，受邀请可获得2000万 Tokens | [硅基流动](https://cloud.siliconflow.cn/i/yWzlOTHL) |
 
 ## DeepSeek官方
 > [官网链接](https://platform.deepseek.com/)
@@ -27,7 +29,10 @@
 
 ## 硅基流动
 
-> [官网链接](https://cloud.siliconflow.cn/)
+> [官网链接](https://cloud.siliconflow.cn/i/yWzlOTHL)
+邀请码 ：yWzlOTHL  
+使用邀请码可获得2000 Tokens，同时我也会获得Tokens奖励  
+在本站的API密钥：sk-dbmhcbzqgjklpzmbgikrevomkbregpsjapjbwzuxnhyuetqd
 
 ![images/siliconflow_s1.png](/images/siliconflow_s1.png)
 ![images/siliconflow_s2.png](/images/siliconflow_s2.png)

@@ -4,22 +4,29 @@
 >🔓在不使用DeepSeekProxy的情况下，每个用户每日有50次的限额  
 >🖥️如果想要无限制地调用，需要使用DeepSeekProxy
 
-:::warning
-
-DeepSeekProxy是开源软件，不会上传用户的API Key
-
-:::
 
 ## 1️⃣获取API Key
 [点击查看教程](./GetAPIKey.md)
 
-## 2️⃣下载并运行DeepSeekProxy
+## 2️⃣下载并运行 在浙江学网课增强助手
+:::warning 提示
 
+在浙江学网课增强助手是开源软件，不会上传用户的API Key。该软件用于开启DeepSeekProxy本地代理服务器
+
+:::
 - [蓝奏云](https://wwyl.lanzouv.com/b00ocrzzje)    密码：43so
-- [Gitee](https://gitee.com/m0zey/DeepSeekProxy/releases) 下载.7z文件
+- [Gitee](https://gitee.com/m0zey/DeepSeekProxy/releases) 下载.zip文件
+- [直链下载](https://dwpan.com/f/GXi5/ZjoocEasyPro_v0.8.zip)
+
+### 打开软件
+
+![open_exe](/images/open_exe.png)
+
+填入相应平台的API Key，然后点击保存，启动服务
 
 ![images/DeepSeekProxy.png](/images/DeepSeekProxy.png)
-填入相应平台的API Key点击保存即可
+
+![LaunchServer](/images/LaunchServer.png)
 
 ## 3️⃣为什么需要DeepSeekProxy？
 
