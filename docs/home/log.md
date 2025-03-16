@@ -3,8 +3,9 @@
 
 ## 2025/3/16
 1. <span class="improve">改进</span> 在点击自动播放时,会跳出任务列表选项
-2. 3. <span class="new">新增</span> 课件速刷功能
 3. <span class="improve">改进</span> 数学公式显示优化
+2. <span class="new">新增</span> 课件速刷功能
+
 
 ## 2025/3/05
 1. <span class="fix">修复</span> 页面刷新时登陆状态失效的问题
