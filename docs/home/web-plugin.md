@@ -50,7 +50,7 @@
 ## 🤯脚本猫打不开怎么办？
 你可以复制下面的代码，然后，在脚本猫处新建脚本，这与步骤2的效果是相同的
 
-[点击查看代码](/script.txt)
+[点击查看代码](/script.js)
 
 ![images/newscript.png](/images/newscript.png)
 
