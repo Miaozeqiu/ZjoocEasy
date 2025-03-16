@@ -1,14 +1,11 @@
 // ==UserScript==
 // @name         在浙学网课助手(原在浙学题库搜索)
 // @namespace    http://tampermonkey.net/
-// @version      1.80
+// @version      2.0
 // @description  完全免费的在浙学脚本，支持答案显示，自动挂课，粘贴限制解除 官网：https://pages.zaizhexue.top/
 // @author       Miaoz
 // @match        *://www.zjooc.cn/*
-// @grant        GM_xmlhttpRequest
 // @license      MIT
-// @downloadURL https://update.greasyfork.org/scripts/520141/%E5%9C%A8%E6%B5%99%E5%AD%A6%E7%BD%91%E8%AF%BE%E5%8A%A9%E6%89%8B%28%E5%8E%9F%E5%9C%A8%E6%B5%99%E5%AD%A6%E9%A2%98%E5%BA%93%E6%90%9C%E7%B4%A2%29.user.js
-// @updateURL https://update.greasyfork.org/scripts/520141/%E5%9C%A8%E6%B5%99%E5%AD%A6%E7%BD%91%E8%AF%BE%E5%8A%A9%E6%89%8B%28%E5%8E%9F%E5%9C%A8%E6%B5%99%E5%AD%A6%E9%A2%98%E5%BA%93%E6%90%9C%E7%B4%A2%29.meta.js
 // ==/UserScript==
 (() => {
   var __webpack_modules__ = {
@@ -2629,6 +2626,7 @@
       static STORAGE_KEY_CREATE_TIME="create_time";
       static STORAGE_KEY_DEEPSEEK_API_KEY="deepseek_api_key";
       static STORAGE_KEY_DEEPSEEKPROXY="deepseekproxy";
+      static STORAGE_KEY_DO_VIDEO="do_video";
       static get createTime() {
         return localStorage.getItem(this.STORAGE_KEY_CREATE_TIME);
       }
@@ -2646,6 +2644,12 @@
       }
       static set deepseekProxy(value) {
         localStorage.setItem(this.STORAGE_KEY_DEEPSEEKPROXY, value.toString());
+      }
+      static get doVideo() {
+        return "true" === localStorage.getItem(this.STORAGE_KEY_DO_VIDEO);
+      }
+      static set doVideo(value) {
+        localStorage.setItem(this.STORAGE_KEY_DO_VIDEO, value.toString());
       }
       static get username() {
         return localStorage.getItem(this.STORAGE_KEY_USERNAME);
@@ -2795,6 +2799,10 @@
         }));
       };
     }
+    const utils_getCourseId = function() {
+      const match = window.location.href.match(/course\/study\/([a-zA-Z0-9]+)/);
+      return match ? match[1] : null;
+    };
     let isRunning = !0, currentVideoElement = null;
     function findLessons() {
       const allITags = document.getElementsByTagName("i");
@@ -2805,18 +2813,40 @@
         const video = document.querySelector("video");
         if (!video) return console.log("跳过非视频内容"), resolve();
         currentVideoElement = video, video.muted = settings.mute, video.playbackRate = parseFloat(settings.speed) || 1;
+        let playTimer = null;
         const handleEnd = () => {
-          video.removeEventListener("ended", handleEnd), video.removeEventListener("error", handleError), 
-          currentVideoElement = null, resolve();
+          playTimer && clearTimeout(playTimer), video.removeEventListener("ended", handleEnd), 
+          video.removeEventListener("error", handleError), video.removeEventListener("timeupdate", handleTimeUpdate), 
+          currentVideoElement = null, console.log("视频播放完成"), resolve();
         }, handleError = () => {
-          console.log("视频播放异常"), handleEnd();
+          playTimer && clearTimeout(playTimer), console.log("视频播放异常"), handleEnd();
+        };
+        let lastTime = 0, stuckCounter = 0;
+        const handleTimeUpdate = () => {
+          video.currentTime === lastTime ? (stuckCounter++, stuckCounter > 10 && (console.log("视频播放卡住，尝试继续播放"), 
+          video.play().catch((() => {})), stuckCounter = 0)) : (stuckCounter = 0, lastTime = video.currentTime);
         };
         video.addEventListener("ended", handleEnd, {
           once: !0
         }), video.addEventListener("error", handleError, {
           once: !0
+        }), video.addEventListener("timeupdate", handleTimeUpdate);
+        const setupTimer = () => {
+          const duration = video.duration;
+          if (isNaN(duration) || !isFinite(duration)) playTimer = setTimeout(handleEnd, 1e4), 
+          console.log("无法获取视频时长，将播放至少10秒"); else {
+            const actualPlayTime = Math.max(1e3 * duration, 1e4);
+            playTimer = setTimeout(handleEnd, actualPlayTime), console.log(`视频时长${duration}秒，将播放${actualPlayTime / 1e3}秒`);
+          }
+        };
+        video.readyState >= 1 ? setupTimer() : video.addEventListener("loadedmetadata", setupTimer, {
+          once: !0
         }), video.play().catch((err => {
-          console.log("视频播放失败:", err), handleEnd();
+          console.log("视频播放失败:", err), setTimeout((() => {
+            video.play().catch((() => {
+              handleEnd();
+            }));
+          }), 1e3);
         }));
       }));
     }
@@ -2835,22 +2865,154 @@
     function stopAutoPlay() {
       isRunning = !1, currentVideoElement && (currentVideoElement.pause(), currentVideoElement.removeAttribute("src"), 
       currentVideoElement.load(), currentVideoElement = null);
+      const existingModal = document.querySelector(".task-modal");
+      if (existingModal) {
+        const modalStyle = document.querySelector('style[data-for="task-modal"]');
+        modalStyle && document.body.removeChild(modalStyle), document.body.removeChild(existingModal), 
+        console.log("已关闭任务选择窗口");
+      }
     }
     async function autoPlay(parsedData, listenRouteWarpper) {
-      isRunning = !0;
+      if (isRunning = !0, console.log("视频速刷：", settings.doVideo), settings.doVideo) return await async function() {
+        const style = document.createElement("style");
+        style.textContent = "\n    .loading-modal {\n      position: fixed;\n      top: 50%;\n      left: 50%;\n      transform: translate(-50%, -50%);\n      background: white;\n      padding: 20px;\n      border-radius: 8px;\n      box-shadow: 0 0 10px rgba(0,0,0,0.3);\n      z-index: 9999;\n      width: 300px;\n      text-align: center;\n    }\n    .loading-spinner {\n      border: 4px solid #f3f3f3;\n      border-top: 4px solid #3498db;\n      border-radius: 50%;\n      width: 30px;\n      height: 30px;\n      animation: spin 2s linear infinite;\n      margin: 15px auto;\n    }\n    @keyframes spin {\n      0% { transform: rotate(0deg); }\n      100% { transform: rotate(360deg); }\n    }\n    .loading-actions {\n      margin-top: 15px;\n    }\n  ", 
+        style.setAttribute("data-for", "loading-modal"), document.head.appendChild(style);
+        const modal = document.createElement("div");
+        modal.className = "loading-modal", modal.innerHTML = '\n    <h3>正在发送课件信息</h3>\n    <div class="loading-spinner"></div>\n    <p>正在向本地服务器发送数据，请稍候...</p>\n    <div class="loading-actions">\n      <button id="cancel-btn">取消</button>\n    </div>\n  ', 
+        document.body.appendChild(modal);
+        let isCancelled = !1;
+        modal.querySelector("#cancel-btn").addEventListener("click", (() => {
+          isCancelled = !0, document.body.removeChild(modal), document.head.removeChild(style), 
+          console.log("用户取消了请求");
+        }));
+        try {
+          const courseId = utils_getCourseId(), cookie = localStorage.getItem("www.zjooc.cn_cookies");
+          if (console.log(cookie), !courseId || !cookie) throw new Error("无法获取课程ID或Cookie");
+          const controller = new AbortController, signal = controller.signal, checkCancellation = setInterval((() => {
+            isCancelled && (controller.abort(), clearInterval(checkCancellation));
+          }), 100);
+          function readCurrentUserAndPassword() {
+            const currentUser = localStorage.getItem("currentUser");
+            if (currentUser) {
+              const currentAccount = (JSON.parse(localStorage.getItem("accounts")) || []).find((account => account.username === currentUser));
+              return currentAccount ? (console.log("当前用户名:", currentAccount.username), console.log("当前密码:", currentAccount.password), 
+              {
+                username: currentAccount.username,
+                password: currentAccount.password
+              }) : (console.log("未找到该用户的账号信息"), null);
+            }
+            return console.log("没有登录用户"), null;
+          }
+          const currentUserInfo = readCurrentUserAndPassword(), response = await fetch("http://localhost:5233/courseware", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              username: currentUserInfo.username,
+              password: currentUserInfo.password,
+              courseId: courseId
+            }),
+            signal: signal
+          });
+          if (clearInterval(checkCancellation), isCancelled) return;
+          if (!response.ok) throw new Error(`服务器响应错误: ${response.status}`);
+          const result = await response.json();
+          modal.innerHTML = '\n      <h3>发送成功</h3>\n      <p>课件信息已成功发送到本地服务器</p>\n      <div class="loading-actions">\n        <button id="close-btn">关闭</button>\n      </div>\n    ', 
+          modal.querySelector("#close-btn").addEventListener("click", (() => {
+            document.body.removeChild(modal), document.head.removeChild(style);
+          })), console.log("课件信息发送成功:", result);
+        } catch (error) {
+          if (isCancelled) return;
+          modal.innerHTML = `\n      <h3>发送失败</h3>\n      <p>错误信息: ${error.message}</p>\n      <div class="loading-actions">\n        <button id="close-btn">关闭</button>\n      </div>\n    `, 
+          modal.querySelector("#close-btn").addEventListener("click", (() => {
+            document.body.removeChild(modal), document.head.removeChild(style);
+          })), console.error("发送课件信息失败:", error);
+        }
+      }(), [ "success", "所有任务已完成" ];
       const sections = Array.from(document.querySelectorAll("li span.of_eno")).filter((span => "LI" === span.parentElement.tagName));
       if (!sections.length) return console.log("未找到节元素"), [ "error", "请进入 章节内容>任意课件 再尝试自动播放" ];
       if (!parsedData || 0 === Object.keys(parsedData).length) return console.log("未找到数据"), 
       [ "error", "定位未完成课件失败,可能由于页面被刷新，正在从头排查课件" ];
-      const tasks = function(parsedData) {
-        return (parsedData.data || []).flatMap((chapter => chapter.children || [])).flatMap(((section, sectionIndex) => {
-          const lessons = (section.children || []).map(((lesson, lessonIndex) => 2 !== lesson.learnStatus ? {
+      const defaultTasks = function(parsedData) {
+        let globalSectionIndex = 0;
+        return (parsedData.data || []).flatMap((chapter => (chapter.children || []).map(((section, localSectionIndex) => {
+          const currentSectionIndex = globalSectionIndex++, lessons = (section.children || []).map(((lesson, lessonIndex) => 2 !== lesson.learnStatus ? {
             index: lessonIndex,
-            resourceType: lesson.resourceType
+            resourceType: lesson.resourceType,
+            chapterName: "",
+            sectionName: section.name,
+            lessonName: lesson.name
           } : null)).filter(Boolean);
-          return lessons.length ? [ [ sectionIndex, lessons ] ] : [];
+          return lessons.length ? [ currentSectionIndex, lessons ] : null;
+        })).filter(Boolean)));
+      }(parsedData), taskTree = function(parsedData, defaultTasks) {
+        const taskMap = new Map;
+        defaultTasks.forEach((([sectionIndex, lessons]) => {
+          lessons.forEach((lesson => {
+            taskMap.set(`${sectionIndex}-${lesson.index}`, !0);
+          }));
         }));
-      }(parsedData);
+        let globalSectionIndex = 0;
+        return parsedData.data.map(((chapter, chapterIndex) => {
+          const chapterChildren = chapter.children.map(((section, localSectionIndex) => {
+            const currentSectionIndex = globalSectionIndex++;
+            return {
+              name: section.name,
+              sectionIndex: currentSectionIndex,
+              children: section.children.map(((lesson, lessonIndex) => {
+                const isNotCompleted = 2 !== lesson.learnStatus;
+                return {
+                  name: lesson.name,
+                  chapterIndex: chapterIndex,
+                  sectionIndex: currentSectionIndex,
+                  lessonIndex: lessonIndex,
+                  resourceType: lesson.resourceType,
+                  defaultSelected: isNotCompleted,
+                  selected: taskMap.has(`${currentSectionIndex}-${lessonIndex}`) || isNotCompleted
+                };
+              }))
+            };
+          }));
+          return {
+            name: chapter.name,
+            children: chapterChildren
+          };
+        }));
+      }(parsedData, defaultTasks), selectedTasks = await function(taskTree) {
+        return new Promise((resolve => {
+          const style = document.createElement("style");
+          style.textContent = "\n  .task-modal {\n    position: fixed;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    background: white;\n    padding: 20px;\n    border-radius: 8px;\n    box-shadow: 0 0 10px rgba(0,0,0,0.3);\n    z-index: 9999;\n    max-width: 80%;\n    max-height: 80vh;\n    overflow: auto;\n    width: 500px;\n  }\n  .task-tree {\n    margin: 10px 0;\n  }\n  .task-item {\n    margin-left: 20px;\n    padding: 5px 0;\n    word-break: break-word;\n    overflow-wrap: break-word;\n  }\n  .modal-actions {\n    text-align: right;\n    margin-top: 15px;\n  }\n  .task-checkbox {\n    margin-right: 8px;\n  }\n", 
+          style.setAttribute("data-for", "task-modal");
+          const modal = document.createElement("div");
+          modal.className = "task-modal";
+          const renderTree = (items, depth = 0) => items.map((item => `\n        <div class="task-item" style="margin-left: ${20 * depth}px">\n          ${item.children ? `\n            <strong>${item.name}</strong>\n            ${renderTree(item.children, depth + 1)}\n          ` : `\n            <label>\n              <input type="checkbox" \n                class="task-checkbox" \n                ${item.selected ? "checked" : ""}\n                data-section="${item.sectionIndex}"\n                data-lesson="${item.lessonIndex}"\n                data-resource-type="${item.resourceType}">\n              ${item.name} (${1 === item.resourceType ? "视频" : "文档"})\n            </label>\n          `}\n        </div>\n      `)).join("");
+          modal.innerHTML = `\n      <h3>请选择要完成的课件</h3>\n      <div class="task-tree">\n        ${renderTree(taskTree)}\n      </div>\n      <div class="modal-actions">\n        <button id="confirm-btn">开始任务</button>\n        <button id="cancel-btn">取消</button>\n      </div>\n    `, 
+          modal.querySelector("#confirm-btn").addEventListener("click", (() => {
+            const selectedTasks = [], checkboxes = modal.querySelectorAll("input.task-checkbox:checked");
+            console.log("选中的复选框数量:", checkboxes.length), checkboxes.forEach((checkbox => {
+              const sectionIndex = parseInt(checkbox.dataset.section, 10), lessonIndex = parseInt(checkbox.dataset.lesson, 10), resourceType = parseInt(checkbox.dataset.resourceType, 10);
+              isNaN(sectionIndex) || isNaN(lessonIndex) || isNaN(resourceType) ? console.error("无效的任务数据:", checkbox.dataset) : selectedTasks.push({
+                sectionIndex: sectionIndex,
+                lessonIndex: lessonIndex,
+                resourceType: resourceType
+              });
+            })), console.log("最终选择的任务:", selectedTasks), document.body.removeChild(modal), document.body.removeChild(style), 
+            resolve(selectedTasks);
+          })), modal.querySelector("#cancel-btn").addEventListener("click", (() => {
+            document.body.removeChild(modal), document.body.removeChild(style), resolve(null);
+          })), document.body.appendChild(style), document.body.appendChild(modal);
+        }));
+      }(taskTree);
+      if (console.log(selectedTasks), !selectedTasks) return stopAutoPlay(), [ "info", "用户取消任务" ];
+      const taskMap = new Map;
+      selectedTasks.forEach((({sectionIndex: sectionIndex, lessonIndex: lessonIndex, resourceType: resourceType}) => {
+        taskMap.has(sectionIndex) || taskMap.set(sectionIndex, []), taskMap.get(sectionIndex).push({
+          index: lessonIndex,
+          resourceType: resourceType
+        });
+      }));
+      const tasks = Array.from(taskMap.entries());
       if (!tasks.length) return console.log("所有任务已完成"), [ "success", "所有任务已完成" ];
       try {
         for (const [sectionIndex, lessons] of tasks) {
@@ -2861,13 +3023,18 @@
           console.log(lessonElements);
           for (const {index: index, resourceType: resourceType} of lessons) {
             if (console.log("正在完成第", index, "/", lessonElements.length, "课"), !isRunning) break;
-            const lessonElement = lessonElements[index];
-            listenRouteWarpper.listenRoute = !1, lessonElement?.click(), await new Promise((r => setTimeout(r, 20))), 
-            listenRouteWarpper.listenRoute = !0, console.log(lessonElement), await new Promise((r => setTimeout(r, 2e3))), 
-            1 === resourceType ? await playVideo() : await completeLesson(), setCompletedStatus(lessonElement);
-            const currentSection = parsedData.data.flatMap((chapter => chapter.children))[sectionIndex];
-            currentSection && currentSection.children[index] && (currentSection.children[index].learnStatus = 2), 
-            await new Promise((r => setTimeout(r, 2e3)));
+            for (const {index: index, resourceType: resourceType} of lessons) {
+              if (console.log("正在完成第", index, "/", lessonElements.length, "课", "资源类型:", resourceType), 
+              !isRunning) break;
+              const lessonElement = lessonElements[index];
+              listenRouteWarpper.listenRoute = !1, lessonElement?.click(), await new Promise((r => setTimeout(r, 20))), 
+              listenRouteWarpper.listenRoute = !0, console.log(lessonElement), await new Promise((r => setTimeout(r, 2e3))), 
+              1 === resourceType ? (console.log("开始播放视频"), await playVideo(), console.log("视频播放完成，继续下一步")) : (console.log("处理文档类型资源"), 
+              await completeLesson()), setCompletedStatus(lessonElement);
+              const currentSection = parsedData.data.flatMap((chapter => chapter.children))[sectionIndex];
+              currentSection && currentSection.children[index] && (currentSection.children[index].learnStatus = 2), 
+              await new Promise((r => setTimeout(r, 2e3)));
+            }
           }
         }
       } catch (error) {
@@ -2969,8 +3136,22 @@
     function insertButtonAndFetchContent(element) {
       if (settings.examMode) return;
       const style = document.createElement("style");
-      style.textContent = "\n        .deepseek-button {\n            background: transparent;\n            border: none;\n            cursor: pointer;\n            padding: 8px;\n            transition: all 0.3s;\n            position: relative;\n            display: flex;\n            align-items: center;\n        }\n\n        .deepseek-button svg {\n            width: 24px;\n            height: 24px;\n            transition: transform 0.3s;\n        }\n\n        .deepseek-button:hover svg {\n            transform: scale(1.1);\n        }\n\n        .deepseek-button.loading .icon {\n            display: none;\n        }\n\n        .deepseek-button .wrapper {\n            position: relative;\n            width: 24px;\n            height: 24px;\n            display: none;\n        }\n\n        .deepseek-button.loading .wrapper {\n            display: block;\n        }\n\n        .deepseek-button .circle {\n            width: 4px;\n            height: 4px;\n            position: absolute;\n            border-radius: 50%;\n            background: #4D6BFE;\n            animation: circleBounce 0.5s alternate infinite ease;\n        }\n\n        @keyframes circleBounce {\n            0% { top: 12px; height: 4px; }\n            100% { top: 4px; }\n        }\n\n        .deepseek-button .circle:nth-child(1) { left: 15%; }\n        .deepseek-button .circle:nth-child(2) { left: 45%; animation-delay: 0.2s; }\n        .deepseek-button .circle:nth-child(3) { right: 15%; animation-delay: 0.3s; }\n\n        .response-container {\n            display: none;\n            border: 1px solid #e0e0e0;\n            border-radius: 8px;\n            padding: 16px;\n            margin-left: 12px;\n            background: #f8f9fa;\n            font-size: 14px;\n            line-height: 1.6;\n            color: #333;\n            white-space: pre-wrap;\n        }\n    ", 
-      document.head.appendChild(style);
+      if (style.textContent = "\n        .deepseek-button {\n            background: transparent;\n            border: none;\n            cursor: pointer;\n            padding: 8px;\n            transition: all 0.3s;\n            position: relative;\n            display: flex;\n            align-items: center;\n        }\n\n        .deepseek-button svg {\n            width: 24px;\n            height: 24px;\n            transition: transform 0.3s;\n        }\n\n        .deepseek-button:hover svg {\n            transform: scale(1.1);\n        }\n\n        .deepseek-button.loading .icon {\n            display: none;\n        }\n\n        .deepseek-button .wrapper {\n            position: relative;\n            width: 24px;\n            height: 24px;\n            display: none;\n        }\n\n        .deepseek-button.loading .wrapper {\n            display: block;\n        }\n\n        .deepseek-button .circle {\n            width: 4px;\n            height: 4px;\n            position: absolute;\n            border-radius: 50%;\n            background: #4D6BFE;\n            animation: circleBounce 0.5s alternate infinite ease;\n        }\n\n        @keyframes circleBounce {\n            0% { top: 12px; height: 4px; }\n            100% { top: 4px; }\n        }\n\n        .deepseek-button .circle:nth-child(1) { left: 15%; }\n        .deepseek-button .circle:nth-child(2) { left: 45%; animation-delay: 0.2s; }\n        .deepseek-button .circle:nth-child(3) { right: 15%; animation-delay: 0.3s; }\n\n        .response-container {\n            display: none;\n            border: 1px solid #e0e0e0;\n            border-radius: 8px;\n            padding: 16px;\n            margin-left: 12px;\n            background: #f8f9fa;\n            font-size: 14px;\n            line-height: 1.6;\n            color: #333;\n            white-space: pre-wrap;\n        }\n    ", 
+      document.head.appendChild(style), !document.getElementById("katex-css")) {
+        const loadKaTeX = new Promise((resolve => {
+          const katexCSS = document.createElement("link");
+          katexCSS.id = "katex-css", katexCSS.rel = "stylesheet", katexCSS.href = "https://fastly.jsdelivr.net/gh/Miaozeqiu/fontRepository/katex.min.css", 
+          document.head.appendChild(katexCSS);
+          const katexJS = document.createElement("script");
+          katexJS.src = "https://fastly.jsdelivr.net/gh/Miaozeqiu/fontRepository/katex.min.js";
+          const katexAutoJS = document.createElement("script");
+          katexAutoJS.src = "https://fastly.jsdelivr.net/gh/Miaozeqiu/fontRepository/auto-render.min.js", 
+          katexJS.onload = () => {
+            document.head.appendChild(katexAutoJS), katexAutoJS.onload = resolve;
+          }, document.head.appendChild(katexJS);
+        }));
+        window.katexReady = loadKaTeX;
+      }
       const button = document.createElement("button");
       button.className = "deepseek-button", button.classList.add("modified"), button.innerHTML = '\n<svg t="1740664524049" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4489" width="200" height="200"><path d="M1013.248 166.8608c-10.8032-5.4272-15.5136 4.864-21.8624 10.0864-2.1504 1.7408-3.9936 3.9424-5.7856 5.9392-15.872 17.3056-34.4064 28.672-58.5728 27.2384-35.4304-1.9456-65.6384 9.3696-92.3136 36.9664-5.6832-34.048-24.576-54.3744-53.248-67.3792-15.0016-6.7584-30.208-13.568-40.704-28.2624-7.3728-10.496-9.3184-22.1184-13.056-33.6384-2.304-6.912-4.6592-14.0288-12.4928-15.2576-8.4992-1.3824-11.8272 5.9392-15.1552 12.032-13.4144 24.832-18.5344 52.224-18.0736 80.0256 1.1776 62.464 27.0848 112.128 78.4384 147.5584 5.888 3.9936 7.3728 8.1408 5.5296 14.0288-3.4816 12.1856-7.68 24.0128-11.3664 36.1984-2.304 7.7824-5.8368 9.472-13.9776 6.0416a234.752 234.752 0 0 1-74.0864-51.2c-36.5568-36.0448-69.632-75.776-110.848-106.9056a475.4432 475.4432 0 0 0-29.3376-20.48c-42.0864-41.6768 5.5296-75.8784 16.4864-79.872 11.52-4.2496 3.9936-18.7904-33.2288-18.6368-37.1712 0.1536-71.2192 12.8512-114.5856 29.696-6.3488 2.6112-13.0048 4.5056-19.8656 5.9392a404.8384 404.8384 0 0 0-123.0336-4.352c-80.384 9.216-144.64 47.9232-191.8976 114.0736C3.4816 346.1632-9.8304 436.5312 6.4512 530.7904c17.2032 99.2768 66.9184 181.5552 143.36 245.8624 79.3088 66.56 170.5984 99.2256 274.688 92.9792 63.232-3.6864 133.6832-12.288 213.0944-80.8448 20.0704 10.1376 41.0624 14.1824 75.9808 17.2544 26.88 2.56 52.736-1.3824 72.7552-5.5808 31.3856-6.7584 29.184-36.352 17.8688-41.8304-91.9552-43.6224-71.7824-25.856-90.1632-40.192 46.7456-56.4224 117.1968-114.944 144.7424-304.5376 2.0992-15.104 0.256-24.5248 0-36.7616-0.2048-7.3728 1.4336-10.2912 9.7792-11.1616 23.04-2.6624 45.4144-9.1136 65.9456-20.6336 59.5968-33.1776 83.5584-87.6032 89.2416-152.9344 0.8704-9.9328-0.1536-20.3264-10.4448-25.6zM494.08 754.6368c-89.088-71.424-132.3008-94.9248-150.1696-93.9008-16.64 0.9728-13.6704 20.4288-10.0352 33.1264 3.84 12.4928 8.8576 21.1456 15.872 32.1024 4.864 7.3216 8.192 18.176-4.8128 26.2656-28.672 18.176-78.592-6.144-80.9472-7.3216-58.112-34.816-106.6496-80.7936-140.8512-143.7184a445.7984 445.7984 0 0 1-55.3984-194.9184c-0.8192-16.7936 3.9936-22.7328 20.3264-25.7024 21.504-4.096 43.776-4.9152 65.28-1.7408 90.9312 13.568 168.3968 55.04 233.2672 120.6272 37.0688 37.4272 65.1264 82.0736 94.0032 125.7472 30.72 46.336 63.744 90.4704 105.7792 126.6688 14.848 12.6976 26.7264 22.3744 38.0416 29.4912-34.2016 3.84-91.2896 4.7104-130.304-26.7776z m42.752-280.064a13.2096 13.2096 0 0 1 17.7152-12.4928 11.52 11.52 0 0 1 4.8128 3.2256 13.1072 13.1072 0 0 1 3.6864 9.2672 13.2096 13.2096 0 0 1-13.2096 13.3632 13.056 13.056 0 0 1-13.0048-13.312z m132.608 69.4272c-8.448 3.5328-16.9472 6.656-25.088 6.9632a53.0944 53.0944 0 0 1-34.0992-11.0592c-11.6736-9.9328-19.968-15.5136-23.552-33.024a78.2336 78.2336 0 0 1 0.6656-25.5488c3.072-14.2336-0.3072-23.296-10.1376-31.5904-8.0384-6.8096-18.176-8.6016-29.3888-8.6016a23.5008 23.5008 0 0 1-10.8544-3.4304 11.1616 11.1616 0 0 1-4.864-15.5648 50.688 50.688 0 0 1 8.192-9.1136c15.2064-8.8064 32.7168-5.888 48.896 0.6656 15.0528 6.2976 26.368 17.7664 42.7008 33.9456 16.7424 19.6608 19.712 25.1392 29.2352 39.7824 7.4752 11.5712 14.336 23.3984 19.0464 36.9664 2.816 8.3968-0.8704 15.36-10.752 19.6096z" fill="#4D6BFE" p-id="4490"></path></svg>\n        <div class="wrapper">\n            <div class="circle"></div>\n            <div class="circle"></div>\n            <div class="circle"></div>\n        </div>\n    ', 
       element.appendChild(button);
@@ -2989,8 +3170,19 @@
           updateButtonState(!0), outputElement.innerHTML = "", outputElement.style.display = "block", 
           abortController = new AbortController;
           try {
-            const textContent = element.textContent.trim();
-            if (!textContent) return void (outputElement.innerHTML = '<div class="error-message">⚠️ 未找到可提取的文本内容</div>');
+            Array.from(element.querySelectorAll("*"));
+            let combinedContent = "";
+            function processNode(node) {
+              if (node.nodeType === Node.TEXT_NODE) {
+                const text = node.textContent.trim();
+                text && (combinedContent += text + " ");
+              } else if ("IMG" === node.nodeName) {
+                const alt = node.getAttribute("alt");
+                alt && (combinedContent += `[图片: ${alt}] `);
+              } else Array.from(node.childNodes).forEach((child => processNode(child)));
+            }
+            if (processNode(element), combinedContent.trim() || (combinedContent = element.textContent.trim()), 
+            !combinedContent) return void (outputElement.innerHTML = '<div class="error-message">⚠️ 未找到可提取的文本内容</div>');
             var apiUrl = "https://api.csid.cc/deepseek";
             settings.deepseekProxy && (apiUrl = "http://localhost:5233");
             const response = await fetch(apiUrl, {
@@ -3006,7 +3198,7 @@
                   content: "你是有用的人工智能助手，请用清晰格式回答，适当使用段落和列表，但不要使用markdown格式，并且在开头都要回答出你认为对的回答"
                 }, {
                   role: "user",
-                  content: textContent
+                  content: combinedContent
                 } ],
                 stream: !0
               }),
@@ -3029,8 +3221,31 @@
               console.log("lines:", lines), lines.forEach((line => {
                 if (line.startsWith("data: ") && !line.includes("[DONE]")) try {
                   const {choices: choices} = JSON.parse(line.slice(6));
-                  choices?.[0]?.delta?.content && (outputElement.textContent += choices[0].delta.content, 
-                  keepScrolledToBottom(outputElement));
+                  if (choices?.[0]?.delta?.content && (outputElement.innerHTML += choices[0].delta.content, 
+                  keepScrolledToBottom(outputElement), window.renderMathInElement && 0 === outputElement.querySelectorAll(".katex").length)) try {
+                    window.renderMathInElement(outputElement, {
+                      delimiters: [ {
+                        left: "$$",
+                        right: "$$",
+                        display: !0
+                      }, {
+                        left: "$",
+                        right: "$",
+                        display: !1
+                      }, {
+                        left: "\\(",
+                        right: "\\)",
+                        display: !1
+                      }, {
+                        left: "\\[",
+                        right: "\\]",
+                        display: !0
+                      } ],
+                      throwOnError: !1
+                    });
+                  } catch (e) {
+                    console.error("LaTeX 渲染错误:", e);
+                  }
                 } catch (e) {
                   console.error("解析错误:", e);
                 }
@@ -3039,10 +3254,60 @@
           } catch (e) {
             "AbortError" !== e.name && (outputElement.innerHTML += `<div class="error-message">⚠️ 请求中断：${e}</div><a href='https://pages.zaizhexue.top/home/DeepSeek' target="_blank">使用教程</a>`);
           } finally {
-            updateButtonState(!1);
+            updateButtonState(!1), setTimeout((() => {
+              if (window.renderMathInElement) try {
+                window.renderMathInElement(outputElement, {
+                  delimiters: [ {
+                    left: "$$",
+                    right: "$$",
+                    display: !0
+                  }, {
+                    left: "$",
+                    right: "$",
+                    display: !1
+                  }, {
+                    left: "\\(",
+                    right: "\\)",
+                    display: !1
+                  }, {
+                    left: "\\[",
+                    right: "\\]",
+                    display: !0
+                  } ],
+                  throwOnError: !1
+                });
+              } catch (e) {
+                console.error("LaTeX 渲染错误:", e);
+              }
+            }), 500);
           }
         }
       }));
+    }
+    async function checkAndDownload() {
+      try {
+        const controller = new AbortController, timeoutId = setTimeout((() => controller.abort()), 1e3);
+        await fetch("http://localhost:5233/courseware", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username: "",
+            password: ""
+          }),
+          signal: controller.signal
+        });
+        return clearTimeout(timeoutId), !0;
+      } catch (error) {
+        const modal = document.createElement("div");
+        modal.style.cssText = "\n            position: fixed;\n            top: 50%;\n            left: 50%;\n            transform: translate(-50%, -50%);\n            background: white;\n            padding: 20px;\n            border-radius: 8px;\n            box-shadow: 0 0 10px rgba(0,0,0,0.3);\n            z-index: 10000;\n            width: 400px;\n        ", 
+        modal.innerHTML = '\n            <h3 style="margin-top: 0;">请下载在浙学网课增强助手并开启服务</h3>\n            <p>下载途径：</p>\n            <ul style="list-style: none; padding-left: 0;">\n                <li style="margin-bottom: 10px;">\n                    <strong>蓝奏云：</strong>\n                    <a href="https://wwyl.lanzouv.com/b00ocrzzje" target="_blank">点击下载</a>\n                    （密码：43so）\n                </li>\n                <li style="margin-bottom: 10px;">\n                    <strong>Gitee：</strong>\n                    <a href="https://gitee.com/m0zey/DeepSeekProxy/releases" target="_blank">点击下载.zip文件</a>\n                </li>\n                <li style="margin-bottom: 10px;">\n                    <strong>直链下载：</strong>\n                    <a href="https://dwpan.com/f/GXi5/ZjoocEasyPro_v0.8.zip" target="_blank">点击下载</a>\n                </li>\n            </ul>\n            <button style="\n                padding: 8px 16px;\n                background: #4D6BFE;\n                color: white;\n                border: none;\n                border-radius: 4px;\n                cursor: pointer;\n                display: block;\n                margin: 20px auto 0;\n            ">关闭</button>\n        ', 
+        document.body.appendChild(modal);
+        return modal.querySelector("button").addEventListener("click", (() => {
+          document.body.removeChild(modal);
+        })), !1;
+      }
     }
     createButton.styleAdded = !1, function() {
       (async function(fontName, fontUrl) {
@@ -3070,7 +3335,7 @@
       document.head.appendChild(style);
       var originalJson = {};
       let showAnswer = !1;
-      unsafeWindow.copyText = function(element) {
+      function copyText(element) {
         const range = document.createRange();
         range.selectNode(element), window.getSelection().removeAllRanges(), window.getSelection().addRange(range);
         try {
@@ -3079,7 +3344,12 @@
           alert("复制失败");
         }
         window.getSelection().removeAllRanges();
-      };
+      }
+      try {
+        unsafeWindow.copyText = copyText;
+      } catch (e) {
+        window.copyText = copyText;
+      }
       const windowDiv = document.createElement("div");
       windowDiv.id = "scriptWindow";
       const initialPosition = function() {
@@ -3095,7 +3365,7 @@
       const zzxLogo = document.createElement("img");
       zzxLogo.src = imageData.zzxLogo, zzxLogo.style.width = "20px";
       const titleText = document.createElement("span");
-      titleText.innerHTML = "在浙学网课助手 v1.8", titleText.style.marginLeft = "10px";
+      titleText.innerHTML = "在浙学网课助手 v2.0", titleText.style.marginLeft = "10px";
       const title = document.createElement("div");
       title.style.display = "flex", title.appendChild(zzxLogo), title.appendChild(titleText), 
       header.appendChild(title);
@@ -3264,6 +3534,8 @@
         examModeWrapper.style.marginBottom = "0px", examModeWrapper.appendChild(examModeText), 
         examModeWrapper.appendChild(examModeLabel), examModeCheckbox.checked = settings.examMode, 
         examModeCheckbox.addEventListener("change", toggleExamMode), examModeLabel.appendChild(examModeCheckbox), 
+        examModeLabel.appendChild(sliderDiv), examModeCheckbox.checked = settings.examMode, 
+        examModeCheckbox.addEventListener("change", toggleExamMode), examModeLabel.appendChild(examModeCheckbox), 
         examModeLabel.appendChild(sliderDiv);
         const DeepSeekProxyLabel = document.createElement("label");
         DeepSeekProxyLabel.classList.add("switch");
@@ -3285,13 +3557,41 @@
         questionMark.addEventListener("click", (() => {
           window.open("https://pages.zaizhexue.top/home/DeepSeek");
         })), questionMark.classList.add("question-mark"), questionMark.innerHTML = '<svg t="1741083582512" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5218" width="20" height="20"><path d="M512 981.3C253.2 981.3 42.7 770.8 42.7 512S253.2 42.7 512 42.7 981.3 253.2 981.3 512 770.8 981.3 512 981.3z m0-853.3c-211.7 0-384 172.3-384 384s172.3 384 384 384 384-172.3 384-384-172.3-384-384-384z" fill="#BDBDBD" p-id="5219"></path><path d="M512 640c-23.6 0-42.7-19.1-42.7-42.7 0-53.5 28.7-101.8 74.8-126.2 22.9-12.1 42.6-40.4 35.1-76.2-5.4-25.7-26.2-46.6-51.9-51.9-21.4-4.5-42.3 0.4-58.7 13.8-16.2 13.2-25.5 32.6-25.5 53.5 0 23.6-19.1 42.7-42.7 42.7s-42.7-19.1-42.7-42.7c0-46.6 20.8-90.2 57-119.7 36.2-29.4 83.6-40.8 129.9-31.1 58.4 12.2 105.9 59.6 118.1 118.1 14.3 68.6-17.3 136.6-78.8 169-18.1 9.6-29.4 29.1-29.4 50.8 0.2 23.5-18.9 42.6-42.5 42.6z" fill="#BDBDBD" p-id="5220"></path><path d="M512 725.3m-42.7 0a42.7 42.7 0 1 0 85.4 0 42.7 42.7 0 1 0-85.4 0Z" fill="#BDBDBD" p-id="5221"></path></svg>', 
-        questionMark.style.marginLeft = "4px", questionMark.style.marginRight = "40px", 
+        questionMark.style.marginLeft = "4px", questionMark.style.marginRight = "43px", 
         DeepSeekProxyWrapper.appendChild(questionMark), DeepSeekProxyWrapper.appendChild(DeepSeekProxyLabel), 
         DeepSeekProxyCheckbox.checked = settings.deepseekProxy, console.log("deepseekProxy", settings.deepseekProxy), 
         DeepSeekProxyCheckbox.addEventListener("change", (() => {
-          console.log("deepseekProxy1", settings.deepseekProxy), settings.deepseekProxy = !settings.deepseekProxy, 
-          console.log("deepseekProxy2", settings.deepseekProxy);
+          settings.deepseekProxy ? settings.deepseekProxy = !1 : (settings.deepseekProxy = !0, 
+          checkAndDownload());
         })), displayArea.appendChild(DeepSeekProxyWrapper);
+        const DoVideoLabel = document.createElement("label");
+        DoVideoLabel.classList.add("switch");
+        const DoVideoCheckbox = document.createElement("input");
+        DoVideoCheckbox.type = "checkbox", DoVideoCheckbox.classList.add("checkbox"), DoVideoCheckbox.classList.add("examMode");
+        const sliderDiv3 = document.createElement("div");
+        sliderDiv3.classList.add("slider"), DoVideoLabel.appendChild(DoVideoCheckbox), DoVideoLabel.appendChild(sliderDiv3);
+        const DoVideoText = document.createElement("span");
+        DoVideoText.textContent = "课件速刷", DoVideoText.style.whiteSpace = "nowrap", DoVideoText.style.marginRight = "0px";
+        const DoVideoWrapper = document.createElement("div");
+        DoVideoWrapper.setAttribute("id", "DoVideoWrapper"), DoVideoWrapper.style.display = "flex", 
+        DoVideoWrapper.style.width = "89%", DoVideoWrapper.style.alignItems = "center", 
+        DoVideoWrapper.style.justifyContent = "flex-start", DoVideoWrapper.style.marginBottom = "0px", 
+        DoVideoWrapper.style.marginTop = "8px", DoVideoWrapper.appendChild(DoVideoText);
+        const questionMark2 = document.createElement("div");
+        questionMark2.addEventListener("click", (() => {
+          window.open("https://pages.zaizhexue.top/home/QuickCoursewareBrowsing");
+        })), questionMark2.classList.add("question-mark"), questionMark2.innerHTML = '<svg t="1741083582512" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5218" width="20" height="20"><path d="M512 981.3C253.2 981.3 42.7 770.8 42.7 512S253.2 42.7 512 42.7 981.3 253.2 981.3 512 770.8 981.3 512 981.3z m0-853.3c-211.7 0-384 172.3-384 384s172.3 384 384 384 384-172.3 384-384-172.3-384-384-384z" fill="#BDBDBD" p-id="5219"></path><path d="M512 640c-23.6 0-42.7-19.1-42.7-42.7 0-53.5 28.7-101.8 74.8-126.2 22.9-12.1 42.6-40.4 35.1-76.2-5.4-25.7-26.2-46.6-51.9-51.9-21.4-4.5-42.3 0.4-58.7 13.8-16.2 13.2-25.5 32.6-25.5 53.5 0 23.6-19.1 42.7-42.7 42.7s-42.7-19.1-42.7-42.7c0-46.6 20.8-90.2 57-119.7 36.2-29.4 83.6-40.8 129.9-31.1 58.4 12.2 105.9 59.6 118.1 118.1 14.3 68.6-17.3 136.6-78.8 169-18.1 9.6-29.4 29.1-29.4 50.8 0.2 23.5-18.9 42.6-42.5 42.6z" fill="#BDBDBD" p-id="5220"></path><path d="M512 725.3m-42.7 0a42.7 42.7 0 1 0 85.4 0 42.7 42.7 0 1 0-85.4 0Z" fill="#BDBDBD" p-id="5221"></path></svg>', 
+        questionMark2.style.marginLeft = "4px", questionMark2.style.marginRight = "88px", 
+        DoVideoWrapper.appendChild(questionMark2), DoVideoWrapper.appendChild(DoVideoLabel), 
+        DoVideoCheckbox.checked = settings.doVideo, DoVideoCheckbox.addEventListener("change", (async function() {
+          if (!settings.doVideo && this.checked) {
+            settings.doVideo = !0;
+            if (!await checkAndDownload()) return;
+            const windowWidth = 600, windowHeight = 300, left = (window.screen.width - windowWidth) / 2, top = (window.screen.height - windowHeight) / 2, loginWindow = window.open("", "login", `width=${windowWidth},height=${windowHeight},left=${left},top=${top}`);
+            loginWindow.document.write("\n    <html>\n        <head>\n            <title>登录</title>\n            <style>\n                body { font-family: Arial, sans-serif; padding: 20px; }\n                .container { text-align: center; }\n                input { margin: 10px; padding: 5px; }\n                button { padding: 5px 15px; }\n                select { margin: 10px; padding: 5px; }\n            </style>\n        </head>\n        <body>\n            <div class=\"container\">\n                <h2>请输入在浙学的账号和密码</h2>\n                \n                <select id=\"usernameSelect\" onchange=\"loadUsername()\">\n                    <option value=\"\">选择之前登录的账号</option>\n                </select>\n                <br>\n                <input type=\"text\" id=\"username\" placeholder=\"用户名\">\n                <br>\n                <input type=\"password\" id=\"password\" placeholder=\"密码\">\n                <br>\n                <button onclick=\"login()\">确定</button>\n                <button onclick=\"deleteAccount()\">删除账号</button>\n            </div>\n            <script>\n                // 从localStorage加载账号信息\n                function loadUsername() {\n                    const selectedUsername = document.getElementById('usernameSelect').value;\n                    if (selectedUsername) {\n                        document.getElementById('username').value = selectedUsername;\n                        const storedData = JSON.parse(localStorage.getItem('accounts')) || [];\n                        const account = storedData.find(acc => acc.username === selectedUsername);\n                        if (account) {\n                            document.getElementById('password').value = account.password;\n                        }\n                    }\n                }\n\n                // 加载之前保存的账号\n                function loadSavedAccounts() {\n                    const storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                    const selectElement = document.getElementById('usernameSelect');\n                    selectElement.innerHTML = '<option value=\"\">选择之前登录的账号</option>';  // 清空现有的选项\n                    storedAccounts.forEach(account => {\n                        const option = document.createElement('option');\n                        if(account.username){\n                            option.value = account.username;\n                            option.textContent = account.username;\n                            selectElement.appendChild(option);\n                        }\n                    });\n                }\n\n                // 删除账号\n                function deleteAccount() {\n                    const selectedUsername = document.getElementById('usernameSelect').value;\n                    if (!selectedUsername) {\n                        alert('请先选择一个账号进行删除');\n                        return;\n                    }\n                    \n                    let storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                    storedAccounts = storedAccounts.filter(account => account.username !== selectedUsername);\n                    localStorage.setItem('accounts', JSON.stringify(storedAccounts));\n                    loadSavedAccounts();\n                    document.getElementById('username').value = '';\n                    document.getElementById('password').value = '';\n                    alert('账号已删除');\n                }\n\n                // 登录\n                function login() {\n                    const username = document.getElementById('username').value;\n                    const password = document.getElementById('password').value;\n                    \n                    // 发送POST请求\n                    const xhr = new XMLHttpRequest();\n                    xhr.open('POST', 'http://localhost:5233/courseware', true);\n                    \n                    // 设置请求头\n                    xhr.setRequestHeader('Content-Type', 'application/json');\n                    \n                    // 处理响应\n                    xhr.onload = function() {\n                        if (xhr.status === 200) {\n                            const response = JSON.parse(xhr.responseText);\n                            if (response.status === 'success') {\n                                alert('登录成功');\n                                \n                                // 保存当前登录的用户名到localStorage\n                                localStorage.setItem('currentUser', username);\n\n                                // 保存账号和密码到localStorage中的一个专门的数组中\n                                let storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                                const existingAccount = storedAccounts.find(account => account.username === username);\n                                if (!existingAccount) {\n                                    storedAccounts.push({ username: username, password: password });\n                                    localStorage.setItem('accounts', JSON.stringify(storedAccounts));\n                                }\n\n                                loadSavedAccounts();\n                                window.close();\n                            } else {\n                                alert('处理失败：' + response.message);\n                            }\n                        } else {\n                            alert('请求失败，状态码：' + xhr.status);\n                        }\n                    };\n                    \n                    // 发送数据\n                    const data = { username: username, password: password };\n                    xhr.send(JSON.stringify(data));\n                }\n\n                // 页面加载时加载保存的账号\n                window.onload = function() {\n                    loadSavedAccounts();\n                }\n            <\/script>\n        </body>\n    </html>\n"), 
+            loginWindow.document.close();
+          } else settings.doVideo = this.checked;
+        })), displayArea.appendChild(DoVideoWrapper);
         const apiSettingText = document.createElement("span");
         apiSettingText.textContent = "DeepSeek API Key", apiSettingText.style.fontFamily = "SmileySans-Oblique, sans-serif", 
         apiSettingText.style.fontSize = "14px", apiSettingText.style.paddingBottom = "10px";
@@ -3487,7 +3787,7 @@
       header.addEventListener("mousedown", (e => {
         isDragging = !0, offsetX = e.clientX - windowDiv.offsetLeft, offsetY = e.clientY - windowDiv.offsetTop, 
         document.addEventListener("mousemove", onMouseMove), document.addEventListener("mouseup", onMouseUp);
-      })), settings.token ? async function(retries = 3) {
+      })), async function(retries = 3) {
         const attemptFetch = async retryCount => {
           try {
             const response = await fetch("https://app.zaizhexue.top/validateToken", {
@@ -3499,7 +3799,9 @@
                 token: settings.token
               })
             });
-            if (!response.ok) throw await response.json();
+            if (!response.ok) {
+              throw await response.json();
+            }
             {
               const data = await response.json();
               LoggedWarpper.Logged = !0;
@@ -3521,7 +3823,7 @@
           }
         };
         await attemptFetch(retries);
-      }() : (LoggedWarpper.Logged = !1, renderSettingsPage()), function(LoggedWarpper) {
+      }(), function(LoggedWarpper) {
         const currentPath = window.location.pathname;
         "/dist" !== currentPath && "/dist/" !== currentPath || (console.log("跳转到根路径"), window.location.href = "/", 
         LoggedWarpper.Logged = !0);
@@ -3566,8 +3868,25 @@
                 questions[index].appendChild(answerElement);
               }
             }
-          } else settings.examMode ? insertIntoDeepestElement(questions[index], subject.rightAnswer) : (isHtml ? answerElement.innerHTML = `正确答案:<br>${subject.rightAnswer}` : answerElement.textContent = `正确答案: ${subject.rightAnswer}`, 
-          questions[index].appendChild(answerElement));
+          } else {
+            settings.examMode ? insertIntoDeepestElement(questions[index], subject.rightAnswer) : (isHtml ? answerElement.innerHTML = `正确答案:<br>${subject.rightAnswer}` : answerElement.textContent = `正确答案: ${subject.rightAnswer}`, 
+            questions[index].appendChild(answerElement));
+            let answers = subject.rightAnswer.split(",");
+            const common_test_options = questions[index].querySelectorAll(".common_test_option");
+            common_test_options.length > 0 && (console.log("开始答题"), answers.forEach(((answer, index) => {
+              let optionIndex;
+              if ("yes" === answer.toLowerCase()) optionIndex = 0; else {
+                if ("no" !== answer.toLowerCase()) return void console.log(`无效的答案：${answer}`);
+                optionIndex = 1;
+              }
+              if (optionIndex >= 0 && optionIndex < common_test_options.length) {
+                const firstChild = common_test_options[optionIndex].firstElementChild;
+                firstChild ? setTimeout((() => {
+                  firstChild.classList.contains("is-checked") || (firstChild.click(), console.log("点击了", firstChild));
+                }), 200 * index) : console.log(`选项 ${answer} 没有子元素`);
+              } else console.log(`无效的选项索引：${optionIndex}`);
+            })));
+          }
         }
         if (subject.childrenList && Array.isArray(subject.childrenList)) {
           const subquestions = questions[index].querySelectorAll(".questiono-main");
@@ -3601,10 +3920,12 @@
           insertButtonAndFetchContent(question);
         }));
         if (!settings.token) return void displayErrorNotification("请先登录", [ "未登录状态不能使用显示答案功能，其他功能不受限" ]);
-        const originalJsonCopy = JSON.parse(localStorage.getItem("originalJsonCopy")), TitleP = document.querySelector("div.top_title p"), TitleH6 = document.querySelector("h6"), title = TitleP ? TitleP.textContent : TitleH6.textContent;
-        if (originalJsonCopy.data.paperName.trim() == title.trim() ? (console.log("相同"), 
-        cachedPaperSubjectList = (originalJson = originalJsonCopy).data.paperSubjectList) : (console.log(originalJsonCopy.data.paperName.trim()), 
-        console.log(title.trim())), console.log("DOM中的标题：", title), !originalJson || !originalJson.data || void 0 === originalJson.data.id) return console.error("Invalid originalJson structure or missing id"), 
+        const originalJsonCopy = JSON.parse(localStorage.getItem("originalJsonCopy")), TitleP = document.querySelector("div.top_title p"), TitleH6 = document.querySelector("h6");
+        if (!TitleP && !TitleH6) return console.error("无法获取试卷标题"), displayErrorNotification("无法获取试卷标题", [ "请进入试卷页面再进行答题" ]), 
+        void (showAnswer = !1);
+        const title = TitleP ? TitleP.textContent : TitleH6.textContent;
+        if (console.log(originalJsonCopy), originalJsonCopy && (originalJsonCopy.data.paperName.trim() == title.trim() ? cachedPaperSubjectList = (originalJson = originalJsonCopy).data.paperSubjectList : (console.log(originalJsonCopy.data.paperName.trim()), 
+        console.log(title.trim()))), console.log("DOM中的标题：", title), !originalJson || !originalJson.data || void 0 === originalJson.data.id) return console.error("Invalid originalJson structure or missing id"), 
         displayErrorNotification("无法获取试卷ID", [ "不用担心，这可能是因为你刷新了页面，退出后重新进入答题即可" ]), void console.log(originalJson);
         if (!checkRightAnswer(originalJson)) {
           const paperId = originalJson.data.id;
@@ -3685,7 +4006,7 @@
               formattedAnswers += `${answerToDisplay} `;
             })), formattedAnswers = formattedAnswers.trim(), console.log(formattedAnswers), 
             insertIntoDeepestElement(question_content, formattedAnswers);
-          } else console.log("正常"), console.log(question_content), setTimeout((() => {
+          } else console.log(question_content), setTimeout((() => {
             const blanks_box = question_content.querySelectorAll(".blanks_box");
             if (blanks_box ? console.log(blanks_box) : console.log("元素未找到"), blanks_box) blanks_box.forEach(((div, idx) => {
               if (parsedAnswers[idx]) {
@@ -3705,9 +4026,21 @@
               question_content.appendChild(answerElement);
             }
           }), 200);
-        } else settings.examMode ? insertIntoDeepestElement(question_content, subject.rightAnswer) : (isHtml ? (console.log("标签"), 
-        answerElement.innerHTML = `${subject.rightAnswer}`) : answerElement.textContent = `正确答案: ${subject.rightAnswer}`, 
-        question_content.appendChild(answerElement));
+        } else settings.examMode ? insertIntoDeepestElement(question_content, subject.rightAnswer) : (isHtml ? answerElement.innerHTML = `${subject.rightAnswer}` : answerElement.textContent = `正确答案: ${subject.rightAnswer}`, 
+        question_content.appendChild(answerElement), setTimeout((() => {
+          const radio_contents = question_content.querySelectorAll(".radio_content"), answers = subject.rightAnswer.split(",");
+          console.log(radio_contents), radio_contents.length > 0 && (console.log("开始答题"), 
+          answers.forEach(((answer, index) => {
+            let optionIndex = -1;
+            if (optionIndex = "yes" === answer.toLowerCase() ? 0 : "no" === answer.toLowerCase() ? 1 : answer.toUpperCase().charCodeAt(0) - "A".charCodeAt(0), 
+            optionIndex >= 0 && optionIndex < radio_contents.length) {
+              const firstChild = radio_contents[optionIndex].firstElementChild;
+              firstChild ? firstChild.classList.contains("is-checked") ? console.log(`选项 ${answer} 已经被选中了，跳过点击`) : setTimeout((() => {
+                firstChild.click(), console.log("点击了", firstChild);
+              }), 200 * index) : console.log(`选项 ${answer} 没有子元素`);
+            } else console.log(`无效的答案：${answer}`);
+          })));
+        }), 500));
         if (subject.childrenList && subject.childrenList.length > 0) {
           const liElements = question_content.querySelectorAll("li");
           subject.childrenList.forEach(((child, i) => {
@@ -3750,9 +4083,16 @@
           }));
         }
       }
-      var open;
-      open = XMLHttpRequest.prototype.open, XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
-        this.addEventListener("load", (async function() {
+      var originalOpen;
+      XMLHttpRequest.prototype.open, XMLHttpRequest.prototype.send, originalOpen = XMLHttpRequest.prototype.open, 
+      XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+        const fullUrl = new URL(url, window.location.href);
+        "www.zjooc.cn" === fullUrl.hostname && (localStorage.setItem("www.zjooc.cn_cookies", document.cookie), 
+        console.log("www.zjooc.cn_cookies", document.cookie)), this._requestHeaders = {};
+        var originalSetRequestHeader = this.setRequestHeader.bind(this);
+        this.setRequestHeader = function(header, value) {
+          this._requestHeaders[header.toLowerCase()] = value, originalSetRequestHeader(header, value);
+        }, this.addEventListener("load", (async function() {
           try {
             if ("GET" === method.toUpperCase()) {
               const response = JSON.parse(this.responseText);
@@ -3762,7 +4102,7 @@
                 localStorage.setItem("originalJsonCopy", JSON.stringify(originalJson));
                 try {
                   const paperId = originalJson.data.id, response = await fetchOriginalJson(paperId, !1);
-                  response && response.has_original_json ? console.log("Paper exists with original JSON") : (console.log("No paper or original JSON found, performing next step..."), 
+                  response && response.has_original_json ? console.log("Paper exists with original JSON") : (console.log("No paper found, uploading..."), 
                   async function() {
                     console.log(originalJson);
                     try {
@@ -3779,17 +4119,18 @@
                     }
                   }());
                 } catch (error) {
-                  console.error("Error checking originalJson existence:", error);
+                  console.error("Error checking originalJson:", error);
                 }
               }
-              "/jxxt/api/course/courseStudent/getStudentCourseChapters" === new URLSearchParams(url.split("?")[1]).get("service") && (CourseChapters = JSON.parse(this.responseText), 
-              localStorage.setItem("CourseChapters", JSON.stringify(CourseChapters)));
+              if ("/jxxt/api/course/courseStudent/getStudentCourseChapters" === new URLSearchParams(fullUrl.search).get("service")) {
+                const CourseChapters = JSON.parse(this.responseText);
+                localStorage.setItem("CourseChapters", JSON.stringify(CourseChapters));
+              }
             }
-            h;
           } catch (e) {
-            console.log("Error parsing or no paperSubjectList found");
+            console.log("Error processing response:", e);
           }
-        })), open.apply(this, arguments);
+        })), originalOpen.apply(this, arguments);
       };
       const originalFetch = window.fetch;
       function initializeEditorSync() {
@@ -3856,7 +4197,7 @@
           })), responseContainers && responseContainers.forEach((responseContainer => {
             "" !== responseContainer.innerHTML && (responseContainer.style.display = "block");
           })), showAnswerButton.innerHTML = "隐藏答案", showAnswer = !0, await displayRightAnswers(), 
-          void console.log("token", settings.token);
+          console.log("token", settings.token), void (showAnswer || (showAnswerButton.innerHTML = "显示答案"));
         }
       }
       window.addEventListener("keydown", (function(event) {
