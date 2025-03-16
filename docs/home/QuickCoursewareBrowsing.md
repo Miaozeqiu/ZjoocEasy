@@ -20,3 +20,8 @@
 ## 在插件中打开课件速刷功能
 > 在浏览器插件面板开启“课件速刷”，会弹出一个窗口，输入在哲学的账号密码登录即可
 ![openFunction](/images/openFunction.png)
+
+## 使用
+
+直接在课程界面点击"自动播放"按钮即可
+![using](/images/using.png)
