@@ -1,14 +1,16 @@
 # 课件速刷
->🧐在几秒内完成所有课件，不必观看视频  
+>扩展功能  
+>在几秒内完成所有课件，不必观看视频  
 >使用该功能需要下载软件`在浙学网课增强助手`
 
 ## 前提准备
 下载`在浙学网课增强助手`
 - [蓝奏云](https://wwyl.lanzouv.com/b00ocrzzje)    密码：43so
 - [Gitee](https://gitee.com/m0zey/DeepSeekProxy/releases) 下载.zip文件
-- [直链下载](https://dwpan.com/f/GXi5/ZjoocEasyPro_v0.8.zip)
+- [直链下载](https://dwpan.com/f/NjUx/8_8v4aA0Db_ZjoocEasyPro_v0.8.zip)
 
 ## 打开软件
+>可能会提示下载.net运行库，因为软件基于.net开发，打包时为了减小软件体积没有打包运行库，根据提示下载安装后就可以正常运行软件了
 
 ![open_exe](/images/open_exe.png)
 

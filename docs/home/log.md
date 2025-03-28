@@ -1,6 +1,10 @@
 
 # 本站的更新日志
 
+## 2025/3/28
+1. <span class="improve">改进</span>使用Vue3 重构的新版题库网站上线
+2. <span class="new">新增</span> 题库支持OCS
+
 ## 2025/3/16
 1. <span class="improve">改进</span> 在点击自动播放时,会跳出任务列表选项
 3. <span class="improve">改进</span> 数学公式显示优化

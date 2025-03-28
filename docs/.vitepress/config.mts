@@ -27,18 +27,29 @@ export default defineConfig({
     },
     sidebar: [
       {
-        text: '目录',
+        text: '关于',
         items: [
-          { text: '首页', link: '/home/about' },
+          { text: '项目', link: '/home/about' },
+          { text: '日志', link: '/home/log' },
+          { text: '外卖红包', link: '/home/takeout-red-envelopes' },
+        ],
+      },
+      {
+        text: '插件',
+        items: [
           { text: '插件安装', link: '/home/web-plugin' },
           { text: '视频速刷', link: '/home/QuickCoursewareBrowsing' },
-          { text: '✨DeepSeekProxy', link: '/home/DeepSeek'},
-          { text: '✨获取API Key', link: '/home/GetAPIKey'},
+          { text: 'DeepSeekProxy', link: '/home/DeepSeek'},
+          { text: '获取API Key', link: '/home/GetAPIKey'},
           { text: '常见问题', link: '/home/frequently-asked-questions'},
-          { text: '私人题库', link: '/home/private-question-bank' },
-          { text: '日志', link: '/home/log' },
-          { text: 'API', link: '/home/API' },
-          { text: '外卖红包', link: '/home/takeout-red-envelopes' },
+        ]
+      },
+      {
+        text: '题库',
+        items: [
+          // { text: '私人题库', link: '/home/private-question-bank' },
+          { text: '题库配置', link: '/home/API' },
+
         ]
       }
     ],

@@ -15,7 +15,7 @@ hero:
       text: 开始使用
       link: /home/about#✨apps
     - theme: alt
-      text: 题库（暂停更新）
+      text: 题库(支持OCS)
       link: "https://app.zaizhexue.top"
 
 features:

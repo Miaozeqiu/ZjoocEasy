@@ -1,6 +1,4 @@
-::: warning
-如果你使用的是学习通或是其他平台，该助手以及在浙学题库提供不了任何帮助，本站只有‘私人题库’支持OCS，我们正在不断完善私人题库，希望能够打造成你和小伙伴们的共同题库...
-:::
+
 
 <div align="center">
 
@@ -13,7 +11,7 @@
 
 > 在浙学平台的网页插件|答案显示|一键刷课|解除粘贴限制
 
-<a href="https://greasyfork.org/zh-CN/scripts/520141"><img src="https://greasyfork.org/vite/assets/blacklogo96-CxYTSM_T.png" width="40" height="40" /></a> 
+<a href="https://greasyfork.org/zh-CN/scripts/520141"><img src="/images/greasy_fork.png" width="40" height="40" /></a> 
 
 <div style="display: flex; justify-content: flex-start; justify-content: center; margin-top: 0px" >
 
@@ -31,11 +29,14 @@
 </div>
 
 
-在浙学网课助手是一款完全免费的`在浙学`平台插件，支持答案显示，一键挂课以及解除粘贴限制
+::: tip 介绍
+项目共分为两部分：`插件`  `ZE题库`  
+ 
+`插件` 仅支持在浙学（浙江省高等学校在线开放课程共享平台），可以答案显示，一键挂课以及解除粘贴限制。如果你仅是题库用户，请忽略对插件的介绍。
+ 
+`ZE题库` 是一款支持OCS的题库，并且具有AI题库功能。相较于传统题库会有更好的正确率。
+:::
 
-除了插件外，我们还搭建了一个在线的[在浙学题库网站](https://app.zaizhexue.top),可以进行免费的题库搜索。但该题库只包含在浙学中的题目，没有收录任何其他平台的题目。 
-
-若网站搜索不到题目，使用`在浙学网页端插件`通常能帮助您找到更多答案。
 
 ## ✨Apps
 #### 插件 
@@ -44,9 +45,10 @@
 >🔓 解除粘贴限制  
 >⏩ 一键挂课
 
-#### 题库（暂停更新）
->https://app.zaizhexue.top  
->📰 90000+在浙学原题  
+#### 题库
+>https://ze.zaizhexue.top  
+>📰 支持OCS  
+>🤖 AI回答
 
 ## ❔常见问题
 1. [为什么我所有的任务点都已完成，但还是没有满分?](frequently-asked-questions.md#为什么我所有的任务点都已完成，但还是没有满分)
@@ -58,19 +60,12 @@
 >每天免费领满`30-6`的外卖红包  
 >Buy me a coffee~☕
 
-
-
-
 ## 💬交流分享
 
 🐧：893430736
 
 ## ☕待更新的Issues
-1. 试卷展示页面有待开发
-2. 搜索引擎优化
-3. 自动答题功能
-4. AI搜索功能
-5. 用Vue重写网站界面
+暂无，欢迎提供宝贵意见
 
 
 
