@@ -1,0 +1,1 @@
+import{_ as i,c as a,o as n,ae as h}from"./chunks/framework.DN7zo1cr.js";const d=JSON.parse('{"title":"题库配置","description":"","frontmatter":{},"headers":[],"relativePath":"home/API.md","filePath":"home/API.md"}'),k={name:"home/API.md"};function t(p,s,l,E,e,F){return n(),a("div",null,s[0]||(s[0]=[h("",8)]))}const g=i(k,[["render",t]]);export{d as __pageData,g as default};
