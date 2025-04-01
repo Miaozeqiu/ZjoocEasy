@@ -8,15 +8,15 @@
 ## 1️⃣获取API Key
 [点击查看教程](./GetAPIKey.md)
 
-## 2️⃣下载并运行 在浙江学网课增强助手
+## 2️⃣下载并运行 ZE网课助手（自建AI题库）
 :::warning 提示
 
-在浙江学网课增强助手是开源软件，不会上传用户的API Key。该软件用于开启DeepSeekProxy本地代理服务器
+ZE网课助手（自建AI题库）是开源软件，不会上传用户的API Key。该软件用于开启DeepSeekProxy本地代理服务器
 
 :::
 - [蓝奏云](https://wwyl.lanzouv.com/b00ocrzzje)    密码：43so
-- [Gitee](https://gitee.com/m0zey/DeepSeekProxy/releases) 下载.zip文件
-- [直链下载](https://dwpan.com/f/GXi5/ZjoocEasyPro_v0.8.zip)
+- [Gitee](https://gitee.com/m0zey/ZjoocEasyPro/releases) 下载.zip文件
+- [直链下载](https://dwpan.com/f/pYfY/ZE_qiestion_bank.zip)
 
 ### 打开软件
 
