@@ -7,7 +7,7 @@
 下载`ZE网课助手（自建AI题库）`
 - [蓝奏云](https://wwyl.lanzouv.com/b00ocrzzje)    密码：43so
 - [Gitee](https://gitee.com/m0zey/ZjoocEasyPro/releases) 下载.zip文件
-- [直链下载](https://dwpan.com/f/pYfY/ZE_qiestion_bank.zip)
+- [直链下载](https://dwpan.com/f/Dyte/ZE_question_bank.zip)
 
 ## 打开软件
 >可能会提示下载.net运行库，因为软件基于.net开发，打包时为了减小软件体积没有打包运行库，根据提示下载安装后就可以正常运行软件了

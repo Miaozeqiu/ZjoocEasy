@@ -16,7 +16,7 @@ ZE网课助手（自建AI题库）是开源软件，不会上传用户的API Key
 :::
 - [蓝奏云](https://wwyl.lanzouv.com/b00ocrzzje)    密码：43so
 - [Gitee](https://gitee.com/m0zey/ZjoocEasyPro/releases) 下载.zip文件
-- [直链下载](https://dwpan.com/f/pYfY/ZE_qiestion_bank.zip)
+- [直链下载](https://dwpan.com/f/Dyte/ZE_question_bank.zip)
 
 ### 打开软件
 
