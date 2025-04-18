@@ -1,6 +1,11 @@
 
 # 本站的更新日志
 
+## 2025/3/29
+1. <span class="fix">修复</span> 选择题无法自动答题的问题
+2. <span class="improve">改进</span> 优化了插件的自动播放功能,现在会跳过卡住的视频了
+3. <span class="improve">改进</span> 添加警告弹窗，更好地提醒用户
+
 ## 2025/3/28
 1. <span class="improve">改进</span>使用Vue3 重构的新版题库网站上线
 2. <span class="new">新增</span> 题库支持OCS

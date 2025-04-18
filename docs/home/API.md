@@ -5,8 +5,27 @@
 ## 题库配置
 在ZE题库的 `我的>题库配置`界面，你会看到你的配置数据，它完全兼容OCS，你可以直接复制到OCS题库配置界面。
 
+![题库配置](/images/question_bank_settings.png)
 
-返回的数据示例：
+::: tip 添加到ocs的方法如下:
+![添加到ocs](/images/添加配置.gif)
+:::
+
+::: warning 一般情况下，我们会遇到这样的警告弹窗
+![警告弹窗](/images/warning.png)
+我们必须解决这个警告，否则题库是无法使用的。
+你可以按照提示安装ocs全域名版，这个版本与普通版一样是免费的
+或者参照下面的方法解决这个警告
+![编辑](/images/编辑.gif)
+添加这一行代码
+
+// @connect                 api.zaizhexue.top
+![添加域名](/images/add_domain.png)
+:::
+
+
+
+## 返回的数据示例
 
 ```json
 {

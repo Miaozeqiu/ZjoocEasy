@@ -3,30 +3,26 @@
 
 ## 本地搭建
 
-
 :::tip 1️⃣获取API Key
 
 [点击查看教程](./GetAPIKey.md)
 
 :::
 
-:::tip 2️⃣下载并运行 ZE网课助手（自建AI题库）
-
+:::tip 2️⃣下载并安装 ZError
+> [软件官网](https://zerror.neoregion.cn)
 - [蓝奏云](https://wwyl.lanzouv.com/b00ocrzzje)    密码：43so
-- [Gitee](https://gitee.com/m0zey/ZjoocEasyPro/releases) 下载.zip文件
-- [直链下载](https://dwpan.com/f/Dyte/ZE_question_bank.zip)
+- [直链下载](https://dwpan.com/f/bYhj/ZError_Setup_1.0.0.exe)
 
 :::
 
 :::tip 3️⃣打开软件
 
-![open_exe](/images/open_exe.png)
-
 填入相应平台的API Key，然后点击保存，启动服务
 
-![images/DeepSeekProxy.png](/images/DeepSeekProxy.png)
+![images/DeepSeekProxy.png](/images/Settings.png)
 
-![LaunchServer](/images/LaunchServer.png)
+![LaunchServer](/images/LaunchServe.png)
 :::
 
 

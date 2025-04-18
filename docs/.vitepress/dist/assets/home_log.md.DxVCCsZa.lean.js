@@ -1,1 +1,0 @@
-import{_ as l,c as i,o as e,ae as o}from"./chunks/framework.DN7zo1cr.js";const u=JSON.parse('{"title":"本站的更新日志","description":"","frontmatter":{},"headers":[],"relativePath":"home/log.md","filePath":"home/log.md"}'),r={name:"home/log.md"};function t(s,a,n,h,d,c){return e(),i("div",null,a[0]||(a[0]=[o("",39)]))}const p=l(r,[["render",t]]);export{u as __pageData,p as default};
