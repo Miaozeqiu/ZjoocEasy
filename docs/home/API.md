@@ -15,17 +15,81 @@
 ![警告弹窗](/images/warning.png)
 我们必须解决这个警告，否则题库是无法使用的。
 你可以按照提示安装ocs全域名版，这个版本与普通版一样是免费的
+
 或者参照下面的方法解决这个警告
 ![编辑](/images/编辑.gif)
 添加这一行代码
 
 // @connect                 api.zaizhexue.top
+
+切记ctrl+s保存
 ![添加域名](/images/add_domain.png)
 :::
 
+所有跨域提示，请选择永久允许，否则题库无法使用。
+
+## 仍然连接失败
+如果你经过上面的操作，仍然显示连接失败，请你进行下列检测：
+1. 你的网络环境位于中国大陆
+2. 你可以正常访问 api.zaizhexue.top
+
+点击下方按钮测试连接
 
 
-## 返回的数据示例
+<ClientOnly>
+  <div class="api-test">
+    <button class="test-api-button" onclick="testApiConnection()">
+      测试API连接
+    </button>
+    <p class="test-result" id="testResult"></p>
+  </div>
+</ClientOnly>
+
+如果api可以正常连接，但仍然显示连接失败，请你联系开发者帮助配置QQ2669624618
+<style>
+.test-api-button {
+  padding: 10px 20px;
+  background-color:rgb(90, 215, 94);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.test-result {
+  margin-top: 10px;
+}
+</style>
+
+<script>
+export default {
+  mounted() {
+    window.testApiConnection = function() {
+      const result = document.getElementById('testResult');
+      result.textContent = '测试中...';
+      result.style.color = '#666666';
+      
+      fetch('https://api.zaizhexue.top/', {
+        method: 'GET',
+        mode: 'cors'
+      })
+      .then(response => {
+        if (response.ok) {
+          result.innerHTML = '✅ API 连接正常！';
+          result.style.color = '#4CAF50';
+        } else {
+          throw new Error('API 响应异常');
+        }
+      })
+      .catch(error => {
+        result.innerHTML = '❌ API 连接失败，请联系开发者QQ2669624618';
+        result.style.color = '#f44336';
+      });
+    }
+  }
+}
+</script>
+
+## 题库返回的数据示例
 
 ```json
 {

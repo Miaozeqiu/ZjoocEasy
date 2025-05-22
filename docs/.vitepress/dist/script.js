@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         在浙学网课助手(原在浙学题库搜索)
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @homepage     https://pages.zaizhexue.top/
+// @version      2.1.0
 // @description  完全免费的在浙学脚本，支持答案显示，自动挂课，粘贴限制解除 官网：https://pages.zaizhexue.top/
 // @author       Miaoz
 // @match        *://www.zjooc.cn/*
+// @icon         https://img.picui.cn/free/2025/02/24/67bc830a426c5.png
 // @license      MIT
 // ==/UserScript==
 (() => {
@@ -2809,45 +2811,67 @@
       return Array.from(allITags).filter((tag => tag.classList.contains("iconfont") && "SPAN" === tag.parentElement.tagName && !tag.classList.contains("icon-bianji")));
     }
     async function playVideo() {
-      if (isRunning) return new Promise((resolve => {
-        const video = document.querySelector("video");
-        if (!video) return console.log("跳过非视频内容"), resolve();
-        currentVideoElement = video, video.muted = settings.mute, video.playbackRate = parseFloat(settings.speed) || 1;
-        let playTimer = null;
-        const handleEnd = () => {
-          playTimer && clearTimeout(playTimer), video.removeEventListener("ended", handleEnd), 
-          video.removeEventListener("error", handleError), video.removeEventListener("timeupdate", handleTimeUpdate), 
-          currentVideoElement = null, console.log("视频播放完成"), resolve();
-        }, handleError = () => {
-          playTimer && clearTimeout(playTimer), console.log("视频播放异常"), handleEnd();
-        };
-        let lastTime = 0, stuckCounter = 0;
-        const handleTimeUpdate = () => {
-          video.currentTime === lastTime ? (stuckCounter++, stuckCounter > 10 && (console.log("视频播放卡住，尝试继续播放"), 
-          video.play().catch((() => {})), stuckCounter = 0)) : (stuckCounter = 0, lastTime = video.currentTime);
-        };
-        video.addEventListener("ended", handleEnd, {
-          once: !0
-        }), video.addEventListener("error", handleError, {
-          once: !0
-        }), video.addEventListener("timeupdate", handleTimeUpdate);
-        const setupTimer = () => {
-          const duration = video.duration;
-          if (isNaN(duration) || !isFinite(duration)) playTimer = setTimeout(handleEnd, 1e4), 
-          console.log("无法获取视频时长，将播放至少10秒"); else {
-            const actualPlayTime = Math.max(1e3 * duration, 1e4);
-            playTimer = setTimeout(handleEnd, actualPlayTime), console.log(`视频时长${duration}秒，将播放${actualPlayTime / 1e3}秒`);
+      if (!isRunning) return;
+      let errorCount = 0, stuckCheckInterval = null, lastTime = null, stuckCounter = 0;
+      function startStuckDetection(video, onStuck) {
+        function checkStuck() {
+          try {
+            const currentTime = video.currentTime;
+            console.log("检测中 - 当前时间:", currentTime, "上次时间:", lastTime), null !== lastTime && Math.abs(lastTime - currentTime) < .1 ? (stuckCounter++, 
+            console.log("视频可能卡住，计数:", stuckCounter), stuckCounter >= 4 && (stuckCounter = 0, 
+            console.log("视频已卡住超过阈值"), onStuck())) : stuckCounter = 0, lastTime = currentTime;
+          } catch (e) {
+            console.error("卡住检测出错:", e);
           }
-        };
-        video.readyState >= 1 ? setupTimer() : video.addEventListener("loadedmetadata", setupTimer, {
-          once: !0
-        }), video.play().catch((err => {
-          console.log("视频播放失败:", err), setTimeout((() => {
-            video.play().catch((() => {
-              handleEnd();
-            }));
-          }), 1e3);
-        }));
+        }
+        return console.log("开始视频卡住检测"), checkStuck(), stuckCheckInterval = setInterval(checkStuck, 1e3), 
+        console.log("卡住检测定时器已启动，ID:", stuckCheckInterval), stuckCheckInterval;
+      }
+      return new Promise(((resolve, reject) => {
+        console.log("开始准备播放视频..."), setTimeout((() => {
+          const video = document.querySelector("video");
+          if (!video) return reject(new Error("未找到视频元素")), resolve();
+          currentVideoElement = video, video.muted = settings.mute, video.playbackRate = parseFloat(settings.speed) || 1;
+          let playTimer = null;
+          const handleEnd = () => {
+            stuckCheckInterval && (console.log("清理卡住检测定时器"), clearInterval(stuckCheckInterval)), 
+            playTimer && clearTimeout(playTimer), currentVideoElement = null, console.log("视频播放完成"), 
+            resolve();
+          }, handleError = () => {
+            if (stuckCheckInterval && (console.log("清理卡住检测定时器"), clearInterval(stuckCheckInterval)), 
+            playTimer && clearTimeout(playTimer), errorCount++, console.log(`视频播放异常 (第${errorCount}次)`), 
+            errorCount >= 3) return console.log("视频播放失败次数超过限制，终止播放"), void reject(new Error("视频播放失败次数超过限制"));
+            setTimeout((() => {
+              console.log("尝试重新播放视频"), video.play().catch((() => {
+                handleError();
+              })), setTimeout((() => {
+                console.log("重新启动卡住检测"), lastTime = null, stuckCounter = 0, startStuckDetection(video, (() => {
+                  handleError();
+                }));
+              }), 5e3);
+            }), 1e3);
+          };
+          startStuckDetection(video, (() => {
+            handleError();
+          })), video.addEventListener("ended", handleEnd, {
+            once: !0
+          }), video.addEventListener("error", handleError, {
+            once: !0
+          });
+          const setupTimer = () => {
+            const duration = video.duration;
+            if (isNaN(duration) || !isFinite(duration)) playTimer = setTimeout(handleEnd, 1e4), 
+            console.log("无法获取视频时长，将播放至少10秒"); else {
+              const actualPlayTime = Math.max(1e3 * duration, 1e4);
+              playTimer = setTimeout(handleEnd, actualPlayTime), console.log(`视频时长${duration}秒，将播放${actualPlayTime / 1e3}秒`);
+            }
+          };
+          video.readyState >= 1 ? setupTimer() : video.addEventListener("loadedmetadata", setupTimer, {
+            once: !0
+          }), console.log("开始播放视频"), video.play().catch((err => {
+            console.log("视频播放失败:", err), handleError();
+          }));
+        }), 1e3);
       }));
     }
     async function completeLesson() {
@@ -2859,18 +2883,31 @@
       }
       return !1;
     }
-    function setCompletedStatus(lessonElement) {
-      lessonElement && (lessonElement.classList.add("complete"), lessonElement.classList.remove("no-start"));
-    }
     function stopAutoPlay() {
-      isRunning = !1, currentVideoElement && (currentVideoElement.pause(), currentVideoElement.removeAttribute("src"), 
-      currentVideoElement.load(), currentVideoElement = null);
-      const existingModal = document.querySelector(".task-modal");
-      if (existingModal) {
-        const modalStyle = document.querySelector('style[data-for="task-modal"]');
-        modalStyle && document.body.removeChild(modalStyle), document.body.removeChild(existingModal), 
-        console.log("已关闭任务选择窗口");
+      if (console.log("正在停止自动播放..."), isRunning = !1, currentVideoElement) try {
+        console.log("正在停止视频播放"), currentVideoElement.pause(), currentVideoElement.removeAttribute("src"), 
+        currentVideoElement.load();
+        [ "ended", "error", "loadedmetadata", "play" ].forEach((event => {
+          currentVideoElement.removeEventListener(event, (() => {}));
+        })), currentVideoElement = null;
+      } catch (error) {
+        console.error("停止视频播放时出错:", error);
       }
+      const timers = window.setTimeout((() => {}), 0);
+      for (let i = 0; i <= timers; i++) window.clearTimeout(i);
+      const intervals = window.setInterval((() => {}), 0);
+      for (let i = 0; i <= intervals; i++) window.clearInterval(i);
+      try {
+        const existingModal = document.querySelector(".task-modal");
+        if (existingModal) {
+          console.log("正在关闭任务选择窗口");
+          const modalStyle = document.querySelector('style[data-for="task-modal"]');
+          modalStyle && document.body.removeChild(modalStyle), document.body.removeChild(existingModal);
+        }
+      } catch (error) {
+        console.error("关闭任务选择窗口时出错:", error);
+      }
+      console.log("自动播放已完全停止");
     }
     async function autoPlay(parsedData, listenRouteWarpper) {
       if (isRunning = !0, console.log("视频速刷：", settings.doVideo), settings.doVideo) return await async function() {
@@ -2878,7 +2915,7 @@
         style.textContent = "\n    .loading-modal {\n      position: fixed;\n      top: 50%;\n      left: 50%;\n      transform: translate(-50%, -50%);\n      background: white;\n      padding: 20px;\n      border-radius: 8px;\n      box-shadow: 0 0 10px rgba(0,0,0,0.3);\n      z-index: 9999;\n      width: 300px;\n      text-align: center;\n    }\n    .loading-spinner {\n      border: 4px solid #f3f3f3;\n      border-top: 4px solid #3498db;\n      border-radius: 50%;\n      width: 30px;\n      height: 30px;\n      animation: spin 2s linear infinite;\n      margin: 15px auto;\n    }\n    @keyframes spin {\n      0% { transform: rotate(0deg); }\n      100% { transform: rotate(360deg); }\n    }\n    .loading-actions {\n      margin-top: 15px;\n    }\n  ", 
         style.setAttribute("data-for", "loading-modal"), document.head.appendChild(style);
         const modal = document.createElement("div");
-        modal.className = "loading-modal", modal.innerHTML = '\n    <h3>正在发送课件信息</h3>\n    <div class="loading-spinner"></div>\n    <p>正在向本地服务器发送数据，请稍候...</p>\n    <div class="loading-actions">\n      <button id="cancel-btn">取消</button>\n    </div>\n  ', 
+        modal.className = "loading-modal", modal.innerHTML = '\n    <h3>正在发送课件信息</h3>\n    <div class="loading-spinner"></div>\n    <p>本地服务器正在刷课，请稍候...</p>\n    <div class="loading-actions">\n      <button id="cancel-btn">取消</button>\n    </div>\n  ', 
         document.body.appendChild(modal);
         let isCancelled = !1;
         modal.querySelector("#cancel-btn").addEventListener("click", (() => {
@@ -2918,7 +2955,7 @@
           if (clearInterval(checkCancellation), isCancelled) return;
           if (!response.ok) throw new Error(`服务器响应错误: ${response.status}`);
           const result = await response.json();
-          modal.innerHTML = '\n      <h3>发送成功</h3>\n      <p>课件信息已成功发送到本地服务器</p>\n      <div class="loading-actions">\n        <button id="close-btn">关闭</button>\n      </div>\n    ', 
+          modal.innerHTML = '\n      <h3>发送成功</h3>\n      <p>所有课件都已完成，可以手动刷新网页</p>\n      <div class="loading-actions">\n        <button id="close-btn">关闭</button>\n      </div>\n    ', 
           modal.querySelector("#close-btn").addEventListener("click", (() => {
             document.body.removeChild(modal), document.head.removeChild(style);
           })), console.log("课件信息发送成功:", result);
@@ -3014,28 +3051,41 @@
       }));
       const tasks = Array.from(taskMap.entries());
       if (!tasks.length) return console.log("所有任务已完成"), [ "success", "所有任务已完成" ];
+      const failedTasks = new Map;
       try {
-        for (const [sectionIndex, lessons] of tasks) {
-          if (!isRunning) break;
-          listenRouteWarpper.listenRoute = !1, sections[sectionIndex]?.click(), await new Promise((r => setTimeout(r, 20))), 
-          listenRouteWarpper.listenRoute = !0, await new Promise((r => setTimeout(r, 2e3)));
-          const lessonElements = findLessons();
-          console.log(lessonElements);
-          for (const {index: index, resourceType: resourceType} of lessons) {
-            if (console.log("正在完成第", index, "/", lessonElements.length, "课"), !isRunning) break;
+        for (let retry = 0; retry < 3; retry++) {
+          for (const [sectionIndex, lessons] of tasks) {
+            if (console.log("这是一个提示：", tasks), !isRunning) break;
+            listenRouteWarpper.listenRoute = !1, sections[sectionIndex]?.click(), await new Promise((r => setTimeout(r, 20))), 
+            listenRouteWarpper.listenRoute = !0, await new Promise((r => setTimeout(r, 2e3)));
+            const lessonElements = findLessons();
+            console.log(lessonElements);
             for (const {index: index, resourceType: resourceType} of lessons) {
               if (console.log("正在完成第", index, "/", lessonElements.length, "课", "资源类型:", resourceType), 
               !isRunning) break;
               const lessonElement = lessonElements[index];
-              listenRouteWarpper.listenRoute = !1, lessonElement?.click(), await new Promise((r => setTimeout(r, 20))), 
+              if (listenRouteWarpper.listenRoute = !1, lessonElement?.click(), await new Promise((r => setTimeout(r, 20))), 
               listenRouteWarpper.listenRoute = !0, console.log(lessonElement), await new Promise((r => setTimeout(r, 2e3))), 
-              1 === resourceType ? (console.log("开始播放视频"), await playVideo(), console.log("视频播放完成，继续下一步")) : (console.log("处理文档类型资源"), 
-              await completeLesson()), setCompletedStatus(lessonElement);
-              const currentSection = parsedData.data.flatMap((chapter => chapter.children))[sectionIndex];
-              currentSection && currentSection.children[index] && (currentSection.children[index].learnStatus = 2), 
+              1 === resourceType) {
+                console.log("开始播放视频");
+                try {
+                  await playVideo(), console.log("视频播放完成，继续下一步");
+                } catch (error) {
+                  console.log("已跳过"), failedTasks.has(sectionIndex) || failedTasks.set(sectionIndex, []), 
+                  failedTasks.get(sectionIndex).push({
+                    index: index,
+                    resourceType: resourceType
+                  });
+                  continue;
+                }
+              } else console.log("处理文档类型资源"), await completeLesson();
               await new Promise((r => setTimeout(r, 2e3)));
             }
           }
+          if (0 === failedTasks.size) break;
+          tasks.length = 0, failedTasks.forEach(((lessons, sectionIndex) => {
+            tasks.push([ sectionIndex, lessons ]);
+          })), failedTasks.clear(), console.log("开始重试失败的任务:", tasks);
         }
       } catch (error) {
         console.error("执行异常:", error);
@@ -3302,12 +3352,29 @@
       } catch (error) {
         const modal = document.createElement("div");
         modal.style.cssText = "\n            position: fixed;\n            top: 50%;\n            left: 50%;\n            transform: translate(-50%, -50%);\n            background: white;\n            padding: 20px;\n            border-radius: 8px;\n            box-shadow: 0 0 10px rgba(0,0,0,0.3);\n            z-index: 10000;\n            width: 400px;\n        ", 
-        modal.innerHTML = '\n            <h3 style="margin-top: 0;">请下载在浙学网课增强助手并开启服务</h3>\n            <p>下载途径：</p>\n            <ul style="list-style: none; padding-left: 0;">\n                <li style="margin-bottom: 10px;">\n                    <strong>蓝奏云：</strong>\n                    <a href="https://wwyl.lanzouv.com/b00ocrzzje" target="_blank">点击下载</a>\n                    （密码：43so）\n                </li>\n                <li style="margin-bottom: 10px;">\n                    <strong>Gitee：</strong>\n                    <a href="https://gitee.com/m0zey/DeepSeekProxy/releases" target="_blank">点击下载.zip文件</a>\n                </li>\n                <li style="margin-bottom: 10px;">\n                    <strong>直链下载：</strong>\n                    <a href="https://dwpan.com/f/GXi5/ZjoocEasyPro_v0.8.zip" target="_blank">点击下载</a>\n                </li>\n            </ul>\n            <button style="\n                padding: 8px 16px;\n                background: #4D6BFE;\n                color: white;\n                border: none;\n                border-radius: 4px;\n                cursor: pointer;\n                display: block;\n                margin: 20px auto 0;\n            ">关闭</button>\n        ', 
+        modal.innerHTML = '\n            <h3 style="margin-top: 0;">无法连接到本地服务器，请下载ZError并开启服务，否则请关闭该选项</h3>\n            <p>下载途径：</p>\n            <ul style="list-style: none; padding-left: 0;">\n                <li style="margin-bottom: 10px;">\n                    <strong>蓝奏云：</strong>\n                    <a href="https://wwyl.lanzouv.com/b00ocrzzje" target="_blank">点击下载</a>\n                    （密码：43so）\n                </li>\n                <li style="margin-bottom: 10px;">\n                    <strong>直链下载：</strong>\n                    <a href="https://dwpan.com/f/bYhj/ZError_Setup_1.0.0.exe" target="_blank">点击下载</a>\n                </li>\n                    <li style="margin-bottom: 10px;">\n                    <strong>官网：</strong>\n                    <a href="https://zerror.neoregion.cn/" target="_blank">点击访问</a>\n                </li>\n            </ul>\n            <button style="\n                padding: 8px 16px;\n                background: #4D6BFE;\n                color: white;\n                border: none;\n                border-radius: 4px;\n                cursor: pointer;\n                display: block;\n                margin: 20px auto 0;\n            ">关闭</button>\n        ', 
         document.body.appendChild(modal);
         return modal.querySelector("button").addEventListener("click", (() => {
           document.body.removeChild(modal);
         })), !1;
       }
+    }
+    function showConfirmDialog(message, title = "是否确认开启") {
+      return new Promise((resolve => {
+        const overlay = document.createElement("div");
+        overlay.style.cssText = "\n            position: fixed;\n            top: 0;\n            left: 0;\n            width: 100%;\n            height: 100%;\n            background: rgba(0, 0, 0, 0.5);\n            z-index: 9999999;\n        ", 
+        document.body.appendChild(overlay);
+        const modal = document.createElement("div");
+        modal.style.cssText = "\n            position: fixed;\n            top: 50%;\n            left: 50%;\n            transform: translate(-50%, -50%);\n            background: white;\n            padding: 20px;\n            border-radius: 8px;\n            box-shadow: 0 0 10px rgba(0,0,0,0.3);\n            z-index: 10000000000000;\n            width: 400px;\n        ", 
+        modal.innerHTML = `\n            <h3 style="margin-top: 0; font-size: 20px; font-weight: 600;">${title}</h3>\n            <p>${message}</p>\n            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">\n                <button id="confirm-yes" style="\n                    padding: 8px 16px;\n                    background: #4D6BFE;\n                    color: white;\n                    border: none;\n                    border-radius: 4px;\n                    cursor: pointer;\n                ">是</button>\n                <button id="confirm-no" style="\n                    padding: 8px 16px;\n                    background: #f5f5f5;\n                    color: #333;\n                    border: 1px solid #ddd;\n                    border-radius: 4px;\n                    cursor: pointer;\n                ">否</button>\n            </div>\n        `, 
+        document.body.appendChild(modal);
+        const yesButton = modal.querySelector("#confirm-yes"), noButton = modal.querySelector("#confirm-no");
+        yesButton.addEventListener("click", (() => {
+          document.body.removeChild(modal), document.body.removeChild(overlay), resolve(!0);
+        })), noButton.addEventListener("click", (() => {
+          document.body.removeChild(modal), document.body.removeChild(overlay), resolve(!1);
+        }));
+      }));
     }
     createButton.styleAdded = !1, function() {
       (async function(fontName, fontUrl) {
@@ -3365,7 +3432,7 @@
       const zzxLogo = document.createElement("img");
       zzxLogo.src = imageData.zzxLogo, zzxLogo.style.width = "20px";
       const titleText = document.createElement("span");
-      titleText.innerHTML = "在浙学网课助手 v2.0", titleText.style.marginLeft = "10px";
+      titleText.innerHTML = "在浙学网课助手 v2.1.0", titleText.style.marginLeft = "10px";
       const title = document.createElement("div");
       title.style.display = "flex", title.appendChild(zzxLogo), title.appendChild(titleText), 
       header.appendChild(title);
@@ -3518,7 +3585,7 @@
           btn.disabled = !0;
         }
         rightContainer.appendChild(instructions), rightContainer.appendChild(text), rightContainer.appendChild(btn), 
-        imgContainer.appendChild(rightContainer);
+        imgContainer.appendChild(rightContainer), displayArea.appendChild(imgContainer);
         const examModeLabel = document.createElement("label");
         examModeLabel.classList.add("switch");
         const examModeCheckbox = document.createElement("input");
@@ -3534,8 +3601,6 @@
         examModeWrapper.style.marginBottom = "0px", examModeWrapper.appendChild(examModeText), 
         examModeWrapper.appendChild(examModeLabel), examModeCheckbox.checked = settings.examMode, 
         examModeCheckbox.addEventListener("change", toggleExamMode), examModeLabel.appendChild(examModeCheckbox), 
-        examModeLabel.appendChild(sliderDiv), examModeCheckbox.checked = settings.examMode, 
-        examModeCheckbox.addEventListener("change", toggleExamMode), examModeLabel.appendChild(examModeCheckbox), 
         examModeLabel.appendChild(sliderDiv);
         const DeepSeekProxyLabel = document.createElement("label");
         DeepSeekProxyLabel.classList.add("switch");
@@ -3546,7 +3611,7 @@
         sliderDiv2.classList.add("slider"), DeepSeekProxyLabel.appendChild(DeepSeekProxyCheckbox), 
         DeepSeekProxyLabel.appendChild(sliderDiv2);
         const DeepSeekProxyText = document.createElement("span");
-        DeepSeekProxyText.textContent = "DeepSeekProxy", DeepSeekProxyText.style.whiteSpace = "nowrap", 
+        DeepSeekProxyText.textContent = "本地AI", DeepSeekProxyText.style.whiteSpace = "nowrap", 
         DeepSeekProxyText.style.marginRight = "0px";
         const DeepSeekProxyWrapper = document.createElement("div");
         DeepSeekProxyWrapper.setAttribute("id", "DeepSeekProxyWrapper"), DeepSeekProxyWrapper.style.display = "flex", 
@@ -3557,7 +3622,7 @@
         questionMark.addEventListener("click", (() => {
           window.open("https://pages.zaizhexue.top/home/DeepSeek");
         })), questionMark.classList.add("question-mark"), questionMark.innerHTML = '<svg t="1741083582512" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5218" width="20" height="20"><path d="M512 981.3C253.2 981.3 42.7 770.8 42.7 512S253.2 42.7 512 42.7 981.3 253.2 981.3 512 770.8 981.3 512 981.3z m0-853.3c-211.7 0-384 172.3-384 384s172.3 384 384 384 384-172.3 384-384-172.3-384-384-384z" fill="#BDBDBD" p-id="5219"></path><path d="M512 640c-23.6 0-42.7-19.1-42.7-42.7 0-53.5 28.7-101.8 74.8-126.2 22.9-12.1 42.6-40.4 35.1-76.2-5.4-25.7-26.2-46.6-51.9-51.9-21.4-4.5-42.3 0.4-58.7 13.8-16.2 13.2-25.5 32.6-25.5 53.5 0 23.6-19.1 42.7-42.7 42.7s-42.7-19.1-42.7-42.7c0-46.6 20.8-90.2 57-119.7 36.2-29.4 83.6-40.8 129.9-31.1 58.4 12.2 105.9 59.6 118.1 118.1 14.3 68.6-17.3 136.6-78.8 169-18.1 9.6-29.4 29.1-29.4 50.8 0.2 23.5-18.9 42.6-42.5 42.6z" fill="#BDBDBD" p-id="5220"></path><path d="M512 725.3m-42.7 0a42.7 42.7 0 1 0 85.4 0 42.7 42.7 0 1 0-85.4 0Z" fill="#BDBDBD" p-id="5221"></path></svg>', 
-        questionMark.style.marginLeft = "4px", questionMark.style.marginRight = "43px", 
+        questionMark.style.marginLeft = "4px", questionMark.style.marginRight = "103px", 
         DeepSeekProxyWrapper.appendChild(questionMark), DeepSeekProxyWrapper.appendChild(DeepSeekProxyLabel), 
         DeepSeekProxyCheckbox.checked = settings.deepseekProxy, console.log("deepseekProxy", settings.deepseekProxy), 
         DeepSeekProxyCheckbox.addEventListener("change", (() => {
@@ -3567,7 +3632,7 @@
         const DoVideoLabel = document.createElement("label");
         DoVideoLabel.classList.add("switch");
         const DoVideoCheckbox = document.createElement("input");
-        DoVideoCheckbox.type = "checkbox", DoVideoCheckbox.classList.add("checkbox"), DoVideoCheckbox.classList.add("examMode");
+        DoVideoCheckbox.type = "checkbox", DoVideoCheckbox.classList.add("checkbox"), DoVideoCheckbox.classList.add("dovideo");
         const sliderDiv3 = document.createElement("div");
         sliderDiv3.classList.add("slider"), DoVideoLabel.appendChild(DoVideoCheckbox), DoVideoLabel.appendChild(sliderDiv3);
         const DoVideoText = document.createElement("span");
@@ -3584,11 +3649,15 @@
         questionMark2.style.marginLeft = "4px", questionMark2.style.marginRight = "88px", 
         DoVideoWrapper.appendChild(questionMark2), DoVideoWrapper.appendChild(DoVideoLabel), 
         DoVideoCheckbox.checked = settings.doVideo, DoVideoCheckbox.addEventListener("change", (async function() {
+          if (console.log(DoVideoCheckbox), !settings.doVideo) {
+            if (!await showConfirmDialog('不建议开启，关闭该选项也可以使用"自动播放"挂课，但开启后的"自动播放"将使用速刷软件在几秒内完成所有课件，这意味着有清空分数的风险，以及需要下载额外的软件（ZError），因此除非正常刷课时间来不及了，否则不建议开启！<br>注意:你在软件中开启服务后，需要关闭该选项，再次打开以进行登录')) return console.log("取消开启"), 
+            void renderSettingsPage();
+          }
           if (!settings.doVideo && this.checked) {
             settings.doVideo = !0;
             if (!await checkAndDownload()) return;
             const windowWidth = 600, windowHeight = 300, left = (window.screen.width - windowWidth) / 2, top = (window.screen.height - windowHeight) / 2, loginWindow = window.open("", "login", `width=${windowWidth},height=${windowHeight},left=${left},top=${top}`);
-            loginWindow.document.write("\n    <html>\n        <head>\n            <title>登录</title>\n            <style>\n                body { font-family: Arial, sans-serif; padding: 20px; }\n                .container { text-align: center; }\n                input { margin: 10px; padding: 5px; }\n                button { padding: 5px 15px; }\n                select { margin: 10px; padding: 5px; }\n            </style>\n        </head>\n        <body>\n            <div class=\"container\">\n                <h2>请输入在浙学的账号和密码</h2>\n                \n                <select id=\"usernameSelect\" onchange=\"loadUsername()\">\n                    <option value=\"\">选择之前登录的账号</option>\n                </select>\n                <br>\n                <input type=\"text\" id=\"username\" placeholder=\"用户名\">\n                <br>\n                <input type=\"password\" id=\"password\" placeholder=\"密码\">\n                <br>\n                <button onclick=\"login()\">确定</button>\n                <button onclick=\"deleteAccount()\">删除账号</button>\n            </div>\n            <script>\n                // 从localStorage加载账号信息\n                function loadUsername() {\n                    const selectedUsername = document.getElementById('usernameSelect').value;\n                    if (selectedUsername) {\n                        document.getElementById('username').value = selectedUsername;\n                        const storedData = JSON.parse(localStorage.getItem('accounts')) || [];\n                        const account = storedData.find(acc => acc.username === selectedUsername);\n                        if (account) {\n                            document.getElementById('password').value = account.password;\n                        }\n                    }\n                }\n\n                // 加载之前保存的账号\n                function loadSavedAccounts() {\n                    const storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                    const selectElement = document.getElementById('usernameSelect');\n                    selectElement.innerHTML = '<option value=\"\">选择之前登录的账号</option>';  // 清空现有的选项\n                    storedAccounts.forEach(account => {\n                        const option = document.createElement('option');\n                        if(account.username){\n                            option.value = account.username;\n                            option.textContent = account.username;\n                            selectElement.appendChild(option);\n                        }\n                    });\n                }\n\n                // 删除账号\n                function deleteAccount() {\n                    const selectedUsername = document.getElementById('usernameSelect').value;\n                    if (!selectedUsername) {\n                        alert('请先选择一个账号进行删除');\n                        return;\n                    }\n                    \n                    let storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                    storedAccounts = storedAccounts.filter(account => account.username !== selectedUsername);\n                    localStorage.setItem('accounts', JSON.stringify(storedAccounts));\n                    loadSavedAccounts();\n                    document.getElementById('username').value = '';\n                    document.getElementById('password').value = '';\n                    alert('账号已删除');\n                }\n\n                // 登录\n                function login() {\n                    const username = document.getElementById('username').value;\n                    const password = document.getElementById('password').value;\n                    \n                    // 发送POST请求\n                    const xhr = new XMLHttpRequest();\n                    xhr.open('POST', 'http://localhost:5233/courseware', true);\n                    \n                    // 设置请求头\n                    xhr.setRequestHeader('Content-Type', 'application/json');\n                    \n                    // 处理响应\n                    xhr.onload = function() {\n                        if (xhr.status === 200) {\n                            const response = JSON.parse(xhr.responseText);\n                            if (response.status === 'success') {\n                                alert('登录成功');\n                                \n                                // 保存当前登录的用户名到localStorage\n                                localStorage.setItem('currentUser', username);\n\n                                // 保存账号和密码到localStorage中的一个专门的数组中\n                                let storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                                const existingAccount = storedAccounts.find(account => account.username === username);\n                                if (!existingAccount) {\n                                    storedAccounts.push({ username: username, password: password });\n                                    localStorage.setItem('accounts', JSON.stringify(storedAccounts));\n                                }\n\n                                loadSavedAccounts();\n                                window.close();\n                            } else {\n                                alert('处理失败：' + response.message);\n                            }\n                        } else {\n                            alert('请求失败，状态码：' + xhr.status);\n                        }\n                    };\n                    \n                    // 发送数据\n                    const data = { username: username, password: password };\n                    xhr.send(JSON.stringify(data));\n                }\n\n                // 页面加载时加载保存的账号\n                window.onload = function() {\n                    loadSavedAccounts();\n                }\n            <\/script>\n        </body>\n    </html>\n"), 
+            loginWindow.document.write("\n                    <html>\n                        <head>\n                            <title>登录</title>\n                            <style>\n                                body { font-family: Arial, sans-serif; padding: 20px; }\n                                .container { text-align: center; }\n                                input { margin: 10px; padding: 5px; }\n                                button { padding: 5px 15px; }\n                                button:disabled { opacity: 0.6; cursor: not-allowed; }\n                                select { margin: 10px; padding: 5px; }\n                            </style>\n                        </head>\n                        <body>\n                            <div class=\"container\">\n                                <h2>请输入在浙学的账号和密码</h2>\n                                \n                                <select id=\"usernameSelect\" onchange=\"loadUsername()\">\n                                    <option value=\"\">选择之前登录的账号</option>\n                                </select>\n                                <br>\n                                <input type=\"text\" id=\"username\" placeholder=\"用户名\">\n                                <br>\n                                <input type=\"password\" id=\"password\" placeholder=\"密码\">\n                                <br>\n                                <button id=\"loginBtn\" onclick=\"login()\">确定</button>\n                                <button onclick=\"deleteAccount()\">删除账号</button>\n                            </div>\n                            <script>\n                                // 从localStorage加载账号信息\nfunction loadUsername() {\n                    const selectedUsername = document.getElementById('usernameSelect').value;\n                    if (selectedUsername) {\n                        document.getElementById('username').value = selectedUsername;\n                        const storedData = JSON.parse(localStorage.getItem('accounts')) || [];\n                        const account = storedData.find(acc => acc.username === selectedUsername);\n                        if (account) {\n                            document.getElementById('password').value = account.password;\n                        }\n                    }\n                }\n\n                // 加载之前保存的账号\n                function loadSavedAccounts() {\n                    const storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                    const selectElement = document.getElementById('usernameSelect');\n                    selectElement.innerHTML = '<option value=\"\">选择之前登录的账号</option>';  // 清空现有的选项\n                    storedAccounts.forEach(account => {\n                        const option = document.createElement('option');\n                        if(account.username){\n                            option.value = account.username;\n                            option.textContent = account.username;\n                            selectElement.appendChild(option);\n                        }\n                    });\n                }\n\n                // 删除账号\n                function deleteAccount() {\n                    const selectedUsername = document.getElementById('usernameSelect').value;\n                    if (!selectedUsername) {\n                        alert('请先选择一个账号进行删除');\n                        return;\n                    }\n                    \n                    let storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                    storedAccounts = storedAccounts.filter(account => account.username !== selectedUsername);\n                    localStorage.setItem('accounts', JSON.stringify(storedAccounts));\n                    loadSavedAccounts();\n                    document.getElementById('username').value = '';\n                    document.getElementById('password').value = '';\n                    alert('账号已删除');\n                }\n                \n                                // 登录\n                                function login() {\n                                    const username = document.getElementById('username').value;\n                                    const password = document.getElementById('password').value;\n                                    const loginBtn = document.getElementById('loginBtn');\n                                    \n                                    // 禁用登录按钮\n                                    loginBtn.disabled = true;\n                                    loginBtn.textContent = '登录中...';\n                                    \n                                    // 发送POST请求\n                                    const xhr = new XMLHttpRequest();\n                                    xhr.open('POST', 'http://localhost:5233/courseware', true);\n                                    \n                                    // 设置请求头\n                                    xhr.setRequestHeader('Content-Type', 'application/json');\n                                    \n                                    // 处理响应\n                                    xhr.onload = function() {\n                                        if (xhr.status === 200) {\n                                            const response = JSON.parse(xhr.responseText);\n                                            if (response.status === 'success') {\n                                                alert('登录成功');\n                                                \n                                                // 保存当前登录的用户名到localStorage\n                                                localStorage.setItem('currentUser', username);\n                \n                                                // 保存账号和密码到localStorage中的一个专门的数组中\n                                                let storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                                                const existingAccount = storedAccounts.find(account => account.username === username);\n                                                if (!existingAccount) {\n                                                    storedAccounts.push({ username: username, password: password });\n                                                    localStorage.setItem('accounts', JSON.stringify(storedAccounts));\n                                                }\n                \n                                                loadSavedAccounts();\n                                                window.close();\n                                            } else {\n                                                alert('处理失败：' + response.message);\n                                                // 恢复按钮状态\n                                                loginBtn.disabled = false;\n                                                loginBtn.textContent = '确定';\n                                            }\n                                        } else {\n                                            alert('请求失败，请检查账号密码，状态码：' + xhr.status);\n                                            // 恢复按钮状态\n                                            loginBtn.disabled = false;\n                                            loginBtn.textContent = '确定';\n                                        }\n                                    };\n                                    \n                                    xhr.onerror = function() {\n                                        alert('网络错误，请求失败，请检查软件服务是否开启');\n                                        // 恢复按钮状态\n                                        loginBtn.disabled = false;\n                                        loginBtn.textContent = '确定';\n                                    };\n                                    \n                                    // 发送数据\n                                    const data = { username: username, password: password };\n                                    xhr.send(JSON.stringify(data));\n                                }\n                \n                                // 页面加载时加载保存的账号\n                                window.onload = function() {\n                                    loadSavedAccounts();\n                                }\n                            <\/script>\n                        </body>\n                    </html>\n                "), 
             loginWindow.document.close();
           } else settings.doVideo = this.checked;
         })), displayArea.appendChild(DoVideoWrapper);
@@ -3617,12 +3686,7 @@
           onClick: () => settings.deepseekApiKey = deepSeekApiKey.value
         });
         apiSettingContainer.appendChild(deepSeekApiKey), apiSettingContainer.appendChild(saveButton), 
-        displayArea.appendChild(imgContainer), displayArea.appendChild(examModeWrapper);
-        const infoTextExam = document.createElement("p");
-        infoTextExam.innerHTML = '开启考试模式后窗口将默认隐藏，您可以通过快捷键<code class="answer">F9</code>开关窗口，<code class="answer">F2</code>开关答案显示，所有提示弹窗将不会显示', 
-        infoTextExam.style.marginTop = "5px", infoTextExam.style.marginBottom = "20px", 
-        infoTextExam.style.fontSize = "12px", infoTextExam.style.color = "rgb(138,138,138)", 
-        displayArea.appendChild(infoTextExam), applySwitchStyles();
+        displayArea.appendChild(examModeWrapper), applySwitchStyles();
       }
       function renderHomePage() {
         displayArea.innerHTML = "";
@@ -3779,7 +3843,12 @@
           notificationContainer.remove();
         }), 4e3);
       }
-      function toggleExamMode() {
+      async function toggleExamMode() {
+        const examModeCheckbox = document.getElementsByClassName("examMode")[0];
+        if (console.log(examModeCheckbox), !settings.examMode) {
+          if (!await showConfirmDialog("开启后插件窗口将默认不显示！！！你可以您可以通过快捷键F9开关窗口，F2开关答案显示，所有提示弹窗提示也将不会显示。你确定要开启吗？")) return console.log("取消开启"), 
+          void renderSettingsPage();
+        }
         document.querySelectorAll(".modified").forEach((element => {
           element.remove();
         })), settings.examMode = !settings.examMode, console.log(settings.examMode), showAnswer && displayRightAnswers();
@@ -3868,16 +3937,16 @@
                 questions[index].appendChild(answerElement);
               }
             }
-          } else {
-            settings.examMode ? insertIntoDeepestElement(questions[index], subject.rightAnswer) : (isHtml ? answerElement.innerHTML = `正确答案:<br>${subject.rightAnswer}` : answerElement.textContent = `正确答案: ${subject.rightAnswer}`, 
-            questions[index].appendChild(answerElement));
+          } else if (settings.examMode) insertIntoDeepestElement(questions[index], subject.rightAnswer); else {
+            isHtml ? answerElement.innerHTML = `正确答案:<br>${subject.rightAnswer}` : answerElement.textContent = `正确答案: ${subject.rightAnswer}`, 
+            questions[index].appendChild(answerElement);
             let answers = subject.rightAnswer.split(",");
             const common_test_options = questions[index].querySelectorAll(".common_test_option");
             common_test_options.length > 0 && (console.log("开始答题"), answers.forEach(((answer, index) => {
               let optionIndex;
-              if ("yes" === answer.toLowerCase()) optionIndex = 0; else {
-                if ("no" !== answer.toLowerCase()) return void console.log(`无效的答案：${answer}`);
-                optionIndex = 1;
+              if ("yes" === answer.toLowerCase()) optionIndex = 0; else if ("no" === answer.toLowerCase()) optionIndex = 1; else {
+                if (!/^[A-Za-z]$/.test(answer.trim())) return void console.log(`无效的答案：${answer}`);
+                optionIndex = answer.toUpperCase().charCodeAt(0) - "A".charCodeAt(0);
               }
               if (optionIndex >= 0 && optionIndex < common_test_options.length) {
                 const firstChild = common_test_options[optionIndex].firstElementChild;
