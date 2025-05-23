@@ -14,7 +14,17 @@
 ::: warning 一般情况下，我们会遇到这样的警告弹窗
 ![警告弹窗](/images/warning.png)
 我们必须解决这个警告，否则题库是无法使用的。
-你可以按照提示安装ocs全域名版，这个版本与普通版一样是免费的
+
+你可以按照提示安装ocs全域名版，这个版本与普通版一样是免费的。  
+不过因为网络原因你是不可能在正常情况下安装的，而该版本脚本猫也被下架了。
+
+你可以点击下方按钮将你目前使用的OCS脚本修改，以适用ZError题库
+
+<ClientOnly>
+    <button class="test-api-button" style="margin-left: 10px; background-color: #2196F3;" onclick="window.open('https://ocs.csid.cc/OCS%E7%BD%91%E8%AF%BE%E5%8A%A9%E6%89%8B.user.js','_blank')">
+      点击安装
+    </button>
+</ClientOnly>
 
 或者参照下面的方法解决这个警告
 ![编辑](/images/编辑.gif)

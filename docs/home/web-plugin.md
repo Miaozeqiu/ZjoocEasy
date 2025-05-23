@@ -47,9 +47,9 @@
 :::
 
 ## 🤯脚本猫打不开怎么办？
-你可以复制下面的代码，然后，在脚本猫处新建脚本，这与步骤2的效果是相同的
+你可以点击下链接安装脚本
 
-[点击查看代码](https://www.tampermonkey.net/script_installation.php#url=https://pages.zaizhexue.top/user.js)
+[点击查看代码](/ZjoocEasy_2.1.0.user.js)
 
 ![images/newscript.png](/images/newscript.png)
 
