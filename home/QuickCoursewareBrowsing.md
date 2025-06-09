@@ -8,6 +8,7 @@
 
 ## 下载并运行 ZError
 > [官网](https://zerror.neoregion.cn)
+- [夸克](https://pan.quark.cn/s/b5302b71bb09)
 - [蓝奏云](https://wwyl.lanzouv.com/b00ocrzzje)    密码：43so
 - [直链下载](https://dwpan.com/f/Dyte/ZE_question_bank.zip)
 
