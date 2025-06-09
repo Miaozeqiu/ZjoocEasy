@@ -1,0 +1,34 @@
+.new {
+    font-size: 14px;
+    color: #2ecc71;
+    border-radius: 4px;
+    padding: 3px 6px;
+    background-color: var(--vp-code-bg);
+    transition: color 0.25s, background-color 0.5s;
+    font-family: var(--vp-font-family-base);
+}
+
+.improve {
+    font-size: 14px;
+    color: #3498db;
+    border-radius: 4px;
+    padding: 3px 6px;
+    background-color: var(--vp-code-bg);
+    transition: color 0.25s, background-color 0.5s;
+    font-family: var(--vp-font-family-base);
+}
+
+.fix {
+    font-size: 14px;
+    color: #f1b02f;
+    border-radius: 4px;
+    padding: 3px 6px;
+    background-color: var(--vp-code-bg);
+    transition: color 0.25s, background-color 0.5s;
+    font-family: var(--vp-font-family-base);
+}
+
+.language-javascript{
+    margin: 0px !important;
+}
+
