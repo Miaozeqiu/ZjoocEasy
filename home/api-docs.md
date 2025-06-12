@@ -19,7 +19,7 @@
 | 参数名 | 类型 | 必填 | 说明 |
 |--------|------|------|------|
 | token | string | 是 | 用户认证令牌 |
-| title | string | 是 | 题目标题/问题内容 |
+| title | string | 是 | 题目标题 |
 | options | string | 否 | 题目选项，多选题时使用 |
 | type | string | 否 | 题目类型标识 |
 
@@ -32,11 +32,11 @@ GET https://api.zaizhexue.top/api/query?token=your_token&title=题目内容&opti
 
 **请求头**:
 ```
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 Authorization: Bearer your_token_here
 ```
 
-**请求参数** (表单数据):
+**请求参数** (JSON格式):
 
 | 参数名 | 类型 | 必填 | 说明 |
 |--------|------|------|------|
@@ -59,7 +59,7 @@ curl -X POST https://api.zaizhexue.top/api/query \
   "data": {
     "code": 1,
     "data": "答案内容",
-    "msg": null
+    "msg": "来自题库。。。"
   },
   "success": true
 }
@@ -69,7 +69,7 @@ curl -X POST https://api.zaizhexue.top/api/query \
 
 | 参数名 | 类型 | 说明 |
 |--------|------|------|
-| success | boolean | 请求是否成功 |
+| success | boolean | 请求是否成功，一般不用管 |
 | data.code | integer | 状态码，1表示找到答案，0表示未找到答案或token无效 |
 | data.data | string | 答案内容，多个答案用#分隔 |
 | data.msg | string | 额外信息 |
@@ -112,7 +112,7 @@ A: 多个答案用 `#` 分隔，例如：`答案1#答案2#答案3`
       "type": "${type}"
     },
     "headers": {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
       "Authorization": "Bearer your_token_here"
     },
     "handler": "return (res)=>res.data.code === 0 ? [res.data.msg, undefined] : [undefined,res.data.data]"
