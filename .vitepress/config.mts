@@ -49,6 +49,7 @@ export default defineConfig({
         items: [
           // { text: '私人题库', link: '/home/private-question-bank' },
           { text: '题库配置', link: '/home/API' },
+          { text: '题库API', link: '/home/api-docs' },
           { text: '自己搭建AI题库', link: '/home/build-question-bank' },  // 新增这一行
 
         ]

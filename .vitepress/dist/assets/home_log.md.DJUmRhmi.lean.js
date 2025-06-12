@@ -1,0 +1,1 @@
+import{_ as l,c as s,o as i,ae as n}from"./chunks/framework.BjlC_BXf.js";const _=JSON.parse('{"title":"本站的更新日志","description":"","frontmatter":{},"headers":[],"relativePath":"home/log.md","filePath":"home/log.md"}'),e={name:"home/log.md"};function o(p,a,r,t,c,h){return i(),s("div",null,a[0]||(a[0]=[n("",42)]))}const u=l(e,[["render",o]]);export{_ as __pageData,u as default};
