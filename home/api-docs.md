@@ -20,7 +20,7 @@
 |--------|------|------|------|
 | token | string | 是 | 用户认证令牌 |
 | title | string | 是 | 题目标题 |
-| options | string | 否 | 题目选项，多选题时使用 |
+| options | string | 否 | 题目选项，选择题使用 最好为英文(single multiple judgement completion)|
 | type | string | 否 | 题目类型标识 |
 
 **请求示例**:
