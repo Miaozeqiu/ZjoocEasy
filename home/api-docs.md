@@ -47,7 +47,7 @@ Authorization: Bearer your_token_here
 **请求示例**:
 ```bash
 curl -X POST https://api.zaizhexue.top/api/query \
-  -H "Content-Type: application/x-www-form-urlencoded" \
+  -H "Content-Type: application/json" \
   -H "Authorization: Bearer your_token_here" \
   -d "title=题目内容&options=选项内容&type=题目类型"
 ```
