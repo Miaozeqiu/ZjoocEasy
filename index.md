@@ -19,10 +19,10 @@ hero:
       link: "https://app.zaizhexue.top"
 
 features:
-  - title: 💰完全免费
-    details: 题库搜索，网页脚本完全免费
+  - title: 💰免费
+    details: 免费题库搜索，免费网页脚本
   - title: ✨DeepSeek
-    details: 支持DeepSeek答题
+    details: 支持DeepSeek答案解析
   - title: ⏩一键刷课
     details: 自动完成视频播放，完成课件
 ---
