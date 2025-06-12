@@ -1,0 +1,1 @@
+import{_ as t,c as e,o as s,ae as i}from"./chunks/framework.BjlC_BXf.js";const m=JSON.parse('{"title":"ZjoocEazy|在浙学网课助手","description":"","frontmatter":{},"headers":[],"relativePath":"README.md","filePath":"README.md"}'),r={name:"README.md"};function o(p,a,l,h,c,d){return s(),e("div",null,a[0]||(a[0]=[i("",3)]))}const n=t(r,[["render",o]]);export{m as __pageData,n as default};
