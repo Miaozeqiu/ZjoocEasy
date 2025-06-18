@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "在浙学网课助手|题库"
+  name: "在浙学助手|题库"
   text: "使用文档"
   tagline: 最好用的在浙学网课助手
   image:

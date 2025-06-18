@@ -1,5 +1,17 @@
 
 # 本站的更新日志
+## 2025/6/18
+1. <span class="improve">优化</span>[助手]课件速刷不依赖于ZError，提高了可用性
+2. <span class="fix">修复</span>[助手]回看试卷无法显示答案
+
+## 2025/6/12
+1. <span class="improve">优化</span> [题库]题库配置改为使用POST请求以适应ocs
+2. <span class="improve">优化</span> [题库]后端重构，由Python Flask改为Go Fiber
+3. <span class="improve">优化</span> [题库]采用主从数据库+redis缓存架构
+4. <span class="improve">优化</span> [题库]题库接口使用cdn加速
+4. <span class="new">新增</span> [题库]试卷添加一键截图功能，可以快速截图，转发给好友
+
+## 2025/6/12
 1. <span class="improve">优化</span> [题库]题库配置改为使用POST请求以适应ocs
 2. <span class="improve">优化</span> [题库]后端重构，由Python Flask改为Go Fiber
 3. <span class="improve">优化</span> [题库]采用主从数据库+redis缓存架构

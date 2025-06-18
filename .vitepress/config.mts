@@ -2,8 +2,8 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "在浙学网课助手|题库",
-  description: "A VitePress Site",
+  title: "在浙学助手|题库",
+  description: "为在浙江学用户提供更好的使用体验和题库服务",
   head: [
     [
       "link",
@@ -38,7 +38,7 @@ export default defineConfig({
         text: '插件',
         items: [
           { text: '插件安装', link: '/home/web-plugin' },
-          { text: '视频速刷', link: '/home/QuickCoursewareBrowsing' },
+          { text: '课件速刷', link: '/home/QuickCoursewareBrowsing' },
           { text: '本地AI代理', link: '/home/DeepSeek'},
           { text: '获取API Key', link: '/home/GetAPIKey'},
           { text: '常见问题', link: '/home/frequently-asked-questions'},
