@@ -25,7 +25,7 @@
 你可以按照提示安装ocs全域名版，这个版本与普通版一样是免费的。不过因为网络原因你可能会打不开链接，而脚本猫也没有这个版本。
 
 #### 方案二
-你可以点击下方按钮将你目前使用的OCS脚本修改，以适用ZError题库。不过在每次ocs版本更新时
+你可以点击下方按钮将你目前使用的OCS脚本修改，以适用ZError题库。不过在每次ocs版本更新时，都需要再次手动修改
 
 <ClientOnly>
     <button class="test-api-button" style="margin-left: 10px; background-color: #2196F3;" onclick="window.open('https://ocs.csid.cc/OCS%E7%BD%91%E8%AF%BE%E5%8A%A9%E6%89%8B.user.js','_blank')">
