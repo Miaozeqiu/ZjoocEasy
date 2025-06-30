@@ -16,6 +16,15 @@ head:
   - - meta
     - property: og:url
       content: https://zjooc.miaozeqiu.top/
+  - - meta
+    - name: theme-color
+      content: "#373737"
+      media: "(prefers-color-scheme: light)"
+    - name: theme-color
+      content: "#0b3e05"
+      media: "(prefers-color-scheme: dark)"
+
+  
 
 hero:
   name: "在浙学助手|题库"
