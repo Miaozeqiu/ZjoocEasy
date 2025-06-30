@@ -65,7 +65,7 @@ export default defineConfig({
     ],
     footer: {
       message: "",
-      copyright: "Copyright © 2024 M0zey 在浙学网课助手|题库",
+      copyright: "Copyright © 2024 M0zey 在浙学网课助手|题库\n<a href='https://beian.miit.gov.cn/' target='_blank'>津ICP备2024025272号-2</a>",
     },
     sidebar: [
       {
