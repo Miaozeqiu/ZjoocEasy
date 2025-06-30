@@ -1,3 +1,18 @@
+---
+title: ZE题库API文档 - 完整的接口说明和SDK示例
+description: ZE题库API的完整文档，包括GET/POST请求方式、JavaScript/Python/PHP SDK示例、OCS配置说明，支持免费题库搜索服务。
+head:
+  - - meta
+    - name: keywords
+      content: ZE题库,API文档,题库接口,OCS配置,SDK示例,JavaScript,Python,PHP,网课助手API
+  - - meta
+    - property: og:title
+      content: ZE题库API文档 - 完整的接口说明和SDK示例
+  - - meta
+    - property: og:description
+      content: ZE题库API的完整文档，包括GET/POST请求方式、JavaScript/Python/PHP SDK示例、OCS配置说明，支持免费题库搜索服务
+---
+
 # API 文档
 
 > 📚 ZE题库API接口的具体说明
@@ -130,3 +145,14 @@ A: 多个答案用 `#` 分隔，例如：`答案1#答案2#答案3`
 ---
 
 *最后更新时间: 2025-06-12*
+
+正在跳转到题库网站，如果没有自动跳转，请[点击这里](https://app.zaizhexue.top/docs/online/API)。
+
+<script>
+export default {
+  mounted() {
+    window.location.href = 'https://docs.zerror.cc/docs/online/API-Documentation';
+  }
+}
+</script>
+

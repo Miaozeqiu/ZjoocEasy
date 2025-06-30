@@ -1,6 +1,21 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
+title: 在浙学助手|题库 - 最好用的在浙学网课助手
+description: 为在浙江学用户提供更好的使用体验和题库服务，支持OCS网课助手，免费题库搜索，一键刷课，DeepSeek AI答案解析。免费使用，支持多种学习平台。
+head:
+  - - meta
+    - name: keywords
+      content: 在浙学,网课助手,题库,OCS,刷课,答案搜索,DeepSeek,AI,浙江学习,网课,自动播放,脚本,免费题库
+  - - meta
+    - property: og:title
+      content: 在浙学助手|题库 - 最好用的在浙学网课助手
+  - - meta
+    - property: og:description
+      content: 为在浙江学用户提供更好的使用体验和题库服务，支持OCS网课助手，免费题库搜索，一键刷课，DeepSeek AI答案解析
+  - - meta
+    - property: og:url
+      content: https://zjooc.miaozeqiu.top/
 
 hero:
   name: "在浙学助手|题库"

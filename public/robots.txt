@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# 优化爬虫访问
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# 禁止访问某些目录
+Disallow: /.vitepress/
+Disallow: /node_modules/
+
+# Sitemap位置
+Sitemap: https://zjooc.miaozeqiu.top/sitemap.xml

@@ -108,10 +108,23 @@ export default {
         result.innerHTML = '❌ API 连接失败，请联系开发者QQ2669624618';
         result.style.color = '#f44336';
       });
-    }
+    },
+    // 立即跳转
+    window.location.href = 'https://docs.zerror.cc/docs/online/API';
+
   }
 }
 </script>
+
+---
+title: 跳转页面
+---
+
+# 正在跳转...
+
+
+
+正在跳转到题库网站，如果没有自动跳转，请[点击这里](https://app.zaizhexue.top/docs/online/API)。
 
 
 
