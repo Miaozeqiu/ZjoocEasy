@@ -36,3 +36,11 @@
 
 
 请注意，API Key 是敏感信息，请妥善保管，不要泄露给他人。
+
+<script>
+    export default  {
+        mounted() {
+            window.location.href = 'https://docs.zerror.cc/docs/get-apiKey';
+            }
+    }
+</script>

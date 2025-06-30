@@ -5,7 +5,7 @@
 <a><img src="/images/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%9B%BE%E6%A0%87.png" width="120" height="120" /></a> 
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-    <h1>ZE|在浙学网课助手</h1>
+    <h1>在浙学助手</h1>
     <img src="https://img.shields.io/github/stars/Miaozeqiu/ZjoocEasy" alt="GitHub Stars"/>
 </div>
 
@@ -28,39 +28,31 @@
 </div>
 </div>
 
-## ✨Apps
-#### 插件 
->[查看详情](web-plugin.md)  （仅支持在浙学平台）📰 显示答案  🔓 解除粘贴限制  ⏩ 一键挂课
-
-#### 题库
->https://tiku.zerror.cc  （支持学习通等平台）🎉支持OCS  🤖 AI回答
-
-::: tip 开发历程
-本站原是在浙学题库搜索网站的文档，仅服务于浙江的在浙学网课用户，记录题库网站的开发日志以及功能介绍  
-24/12/8我写了在浙学网课助手（ZJooc Easy），此处又开始记录该脚本的更新日志  
-25/3/28题库网站更名为ZError（Zero Error），支持OCS网课助手，开始提供不仅限于在浙学的全平台的题库服务，适用于所有地区的网课用户。
-
-脚本与题库网站的缩写都是ZE，图标也类似，只是背景颜色不同，容易让人混淆。实际上是因为我懒得再设计一个图标与名字，将题库网站的图标复用了青色背景的助手图标，名字也沿用ZE，后面为了区分，将题库图标背景颜色改为了橙色，网站更名为ZError，但现在看来还是混淆在了一起，哈哈。
+::: tip 提示
+该插件只能在在浙学平台使用。如果想要在学习通或知道等平台使用插件，可以使用[OCS网课助手](https://docs.ocsjs.com/)，题库推荐使用在浙学助手目前依赖的题库——[ZError](https://tiku.zerror.cc)，该题库支持OCS并且会在查询不到答案时自动调用AI。
 :::
 
- 
+
+## 🌟效果展示
+
+<div class="pic">
+<img src="/images/效果图.png" alt="效果图" />
+</div>
 
 
-## ❔常见问题
+
+
+## 常见问题
 1. [为什么我所有的任务点都已完成，但还是没有满分?](frequently-asked-questions.md#为什么我所有的任务点都已完成，但还是没有满分)
 2. [插件开启【考试模式】后窗口消失了？原本的答案不见了？](frequently-asked-questions.md#_2-插件开启考试模式后-窗口消失了-原本的答案不见了)
 
-## 🍔外卖红包
->[外卖券（美团）](takeout-red-envelopes.md#美团)  
->每天免费领满`30-6`的外卖红包  
->Buy me a coffee~☕
 
 ## 💬交流分享
 
-🐧：893430736
+加入我们的社群：[QQ群(893430736)](https://qm.qq.com/q/478bMeB3zi)、[QQ频道(pd31204123)](https://pd.qq.com/s/51jqhjhn9)
 
 ## ☕待更新的Issues
-暂无，欢迎提供宝贵意见
+1. 在不开启课件速刷情况下，自动播放可能会出现定位失败问题，请出现该问题的用户向开发者提供宝贵的信息，以便开发者排查问题。
 
 
 
