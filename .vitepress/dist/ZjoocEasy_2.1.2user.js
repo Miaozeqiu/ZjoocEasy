@@ -1,15 +1,15 @@
 // ==UserScript==
-// @name         在浙学网课助手(原在浙学题库搜索)
+// @name         在浙学助手
 // @namespace    http://tampermonkey.net/
 // @homepage     https://pages.zaizhexue.top/
-// @version      2.1.0
+// @version      2.1.2
 // @description  完全免费的在浙学脚本，支持答案显示，自动挂课，粘贴限制解除 官网：https://pages.zaizhexue.top/
 // @author       Miaoz
 // @match        *://www.zjooc.cn/*
 // @icon         https://img.picui.cn/free/2025/02/24/67bc830a426c5.png
 // @license      MIT
-// @downloadURL  https://update.greasyfork.org/scripts/520141/%E5%9C%A8%E6%B5%99%E5%AD%A6%E7%BD%91%E8%AF%BE%E5%8A%A9%E6%89%8B%28%E5%8E%9F%E5%9C%A8%E6%B5%99%E5%AD%A6%E9%A2%98%E5%BA%93%E6%90%9C%E7%B4%A2%29.user.js
-// @updateURL    https://update.greasyfork.org/scripts/520141/%E5%9C%A8%E6%B5%99%E5%AD%A6%E7%BD%91%E8%AF%BE%E5%8A%A9%E6%89%8B%28%E5%8E%9F%E5%9C%A8%E6%B5%99%E5%AD%A6%E9%A2%98%E5%BA%93%E6%90%9C%E7%B4%A2%29.meta.js
+// @downloadURL https://update.greasyfork.org/scripts/520141/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%8A%A9%E6%89%8B.user.js
+// @updateURL https://update.greasyfork.org/scripts/520141/%E5%9C%A8%E6%B5%99%E5%AD%A6%E5%8A%A9%E6%89%8B.meta.js
 // ==/UserScript==
 (() => {
   var __webpack_modules__ = {
@@ -2807,6 +2807,176 @@
       const match = window.location.href.match(/course\/study\/([a-zA-Z0-9]+)/);
       return match ? match[1] : null;
     };
+    function md5(e) {
+      function t(e, t) {
+        return e << t | e >>> 32 - t;
+      }
+      function n(e, t) {
+        var n, i, r, o, a;
+        return r = 2147483648 & e, o = 2147483648 & t, a = (1073741823 & e) + (1073741823 & t), 
+        (n = 1073741824 & e) & (i = 1073741824 & t) ? 2147483648 ^ a ^ r ^ o : n | i ? 1073741824 & a ? 3221225472 ^ a ^ r ^ o : 1073741824 ^ a ^ r ^ o : a ^ r ^ o;
+      }
+      function i(e, i, r, o, a, s, l) {
+        return e = n(e, n(n(function(e, t, n) {
+          return e & t | ~e & n;
+        }(i, r, o), a), l)), n(t(e, s), i);
+      }
+      function r(e, i, r, o, a, s, l) {
+        return e = n(e, n(n(function(e, t, n) {
+          return e & n | t & ~n;
+        }(i, r, o), a), l)), n(t(e, s), i);
+      }
+      function o(e, i, r, o, a, s, l) {
+        return e = n(e, n(n(function(e, t, n) {
+          return e ^ t ^ n;
+        }(i, r, o), a), l)), n(t(e, s), i);
+      }
+      function a(e, i, r, o, a, s, l) {
+        return e = n(e, n(n(function(e, t, n) {
+          return t ^ (e | ~n);
+        }(i, r, o), a), l)), n(t(e, s), i);
+      }
+      function s(e) {
+        var t, n = "", i = "";
+        for (t = 0; t <= 3; t++) n += (i = "0" + (e >>> 8 * t & 255).toString(16)).substr(i.length - 2, 2);
+        return n;
+      }
+      var l, c, u, d, h, f, p, g, m, A = Array();
+      for (A = function(e) {
+        for (var t, n = e.length, i = n + 8, r = 16 * ((i - i % 64) / 64 + 1), o = Array(r - 1), a = 0, s = 0; s < n; ) a = s % 4 * 8, 
+        o[t = (s - s % 4) / 4] = o[t] | e.charCodeAt(s) << a, s++;
+        return a = s % 4 * 8, o[t = (s - s % 4) / 4] = o[t] | 128 << a, o[r - 2] = n << 3, 
+        o[r - 1] = n >>> 29, o;
+      }(e = function(e) {
+        e = e.replace(/\r\n/g, "\n");
+        for (var t = "", n = 0; n < e.length; n++) {
+          var i = e.charCodeAt(n);
+          i < 128 ? t += String.fromCharCode(i) : i > 127 && i < 2048 ? (t += String.fromCharCode(i >> 6 | 192), 
+          t += String.fromCharCode(63 & i | 128)) : (t += String.fromCharCode(i >> 12 | 224), 
+          t += String.fromCharCode(i >> 6 & 63 | 128), t += String.fromCharCode(63 & i | 128));
+        }
+        return t;
+      }(e)), f = 1732584193, p = 4023233417, g = 2562383102, m = 271733878, l = 0; l < A.length; l += 16) c = f, 
+      u = p, d = g, h = m, f = i(f, p, g, m, A[l + 0], 7, 3614090360), m = i(m, f, p, g, A[l + 1], 12, 3905402710), 
+      g = i(g, m, f, p, A[l + 2], 17, 606105819), p = i(p, g, m, f, A[l + 3], 22, 3250441966), 
+      f = i(f, p, g, m, A[l + 4], 7, 4118548399), m = i(m, f, p, g, A[l + 5], 12, 1200080426), 
+      g = i(g, m, f, p, A[l + 6], 17, 2821735955), p = i(p, g, m, f, A[l + 7], 22, 4249261313), 
+      f = i(f, p, g, m, A[l + 8], 7, 1770035416), m = i(m, f, p, g, A[l + 9], 12, 2336552879), 
+      g = i(g, m, f, p, A[l + 10], 17, 4294925233), p = i(p, g, m, f, A[l + 11], 22, 2304563134), 
+      f = i(f, p, g, m, A[l + 12], 7, 1804603682), m = i(m, f, p, g, A[l + 13], 12, 4254626195), 
+      g = i(g, m, f, p, A[l + 14], 17, 2792965006), f = r(f, p = i(p, g, m, f, A[l + 15], 22, 1236535329), g, m, A[l + 1], 5, 4129170786), 
+      m = r(m, f, p, g, A[l + 6], 9, 3225465664), g = r(g, m, f, p, A[l + 11], 14, 643717713), 
+      p = r(p, g, m, f, A[l + 0], 20, 3921069994), f = r(f, p, g, m, A[l + 5], 5, 3593408605), 
+      m = r(m, f, p, g, A[l + 10], 9, 38016083), g = r(g, m, f, p, A[l + 15], 14, 3634488961), 
+      p = r(p, g, m, f, A[l + 4], 20, 3889429448), f = r(f, p, g, m, A[l + 9], 5, 568446438), 
+      m = r(m, f, p, g, A[l + 14], 9, 3275163606), g = r(g, m, f, p, A[l + 3], 14, 4107603335), 
+      p = r(p, g, m, f, A[l + 8], 20, 1163531501), f = r(f, p, g, m, A[l + 13], 5, 2850285829), 
+      m = r(m, f, p, g, A[l + 2], 9, 4243563512), g = r(g, m, f, p, A[l + 7], 14, 1735328473), 
+      f = o(f, p = r(p, g, m, f, A[l + 12], 20, 2368359562), g, m, A[l + 5], 4, 4294588738), 
+      m = o(m, f, p, g, A[l + 8], 11, 2272392833), g = o(g, m, f, p, A[l + 11], 16, 1839030562), 
+      p = o(p, g, m, f, A[l + 14], 23, 4259657740), f = o(f, p, g, m, A[l + 1], 4, 2763975236), 
+      m = o(m, f, p, g, A[l + 4], 11, 1272893353), g = o(g, m, f, p, A[l + 7], 16, 4139469664), 
+      p = o(p, g, m, f, A[l + 10], 23, 3200236656), f = o(f, p, g, m, A[l + 13], 4, 681279174), 
+      m = o(m, f, p, g, A[l + 0], 11, 3936430074), g = o(g, m, f, p, A[l + 3], 16, 3572445317), 
+      p = o(p, g, m, f, A[l + 6], 23, 76029189), f = o(f, p, g, m, A[l + 9], 4, 3654602809), 
+      m = o(m, f, p, g, A[l + 12], 11, 3873151461), g = o(g, m, f, p, A[l + 15], 16, 530742520), 
+      f = a(f, p = o(p, g, m, f, A[l + 2], 23, 3299628645), g, m, A[l + 0], 6, 4096336452), 
+      m = a(m, f, p, g, A[l + 7], 10, 1126891415), g = a(g, m, f, p, A[l + 14], 15, 2878612391), 
+      p = a(p, g, m, f, A[l + 5], 21, 4237533241), f = a(f, p, g, m, A[l + 12], 6, 1700485571), 
+      m = a(m, f, p, g, A[l + 3], 10, 2399980690), g = a(g, m, f, p, A[l + 10], 15, 4293915773), 
+      p = a(p, g, m, f, A[l + 1], 21, 2240044497), f = a(f, p, g, m, A[l + 8], 6, 1873313359), 
+      m = a(m, f, p, g, A[l + 15], 10, 4264355552), g = a(g, m, f, p, A[l + 6], 15, 2734768916), 
+      p = a(p, g, m, f, A[l + 13], 21, 1309151649), f = a(f, p, g, m, A[l + 4], 6, 4149444226), 
+      m = a(m, f, p, g, A[l + 11], 10, 3174756917), g = a(g, m, f, p, A[l + 2], 15, 718787259), 
+      p = a(p, g, m, f, A[l + 9], 21, 3951481745), f = n(f, c), p = n(p, u), g = n(g, d), 
+      m = n(m, h);
+      return (s(f) + s(p) + s(g) + s(m)).toLowerCase();
+    }
+    let isDoVideoRunning = !1, doVideoModal = null, doVideoStyle = null;
+    function createAjaxTimestamp() {
+      return function(e) {
+        for (var t = e || 32, n = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678", r = "", o = 0; o < t; o++) r += n.charAt(Math.floor(48 * Math.random()));
+        return r;
+      }(32) + Date.parse(new Date);
+    }
+    function updateDoVideoProgress(current, total, currentName) {
+      if (!doVideoModal) return;
+      const progressElement = doVideoModal.querySelector("#do-video-progress"), currentElement = doVideoModal.querySelector("#do-video-current"), progress = current / total * 100, progressBar = "#".repeat(Math.floor(progress / 10)) + "-".repeat(10 - Math.floor(progress / 10));
+      progressElement.textContent = `进度: ${current}/${total} ${progressBar} [${Math.floor(progress)}%]`, 
+      currentElement.textContent = `当前: ${currentName}`;
+    }
+    function closeDoVideoModal() {
+      doVideoModal && (document.body.removeChild(doVideoModal), doVideoModal = null), 
+      doVideoStyle && (document.head.removeChild(doVideoStyle), doVideoStyle = null);
+    }
+    async function doVideo() {
+      if (isDoVideoRunning) return void console.log("doVideo已在运行中");
+      isDoVideoRunning = !0, doVideoStyle = document.createElement("style"), doVideoStyle.textContent = "\n    .do-video-modal {\n      position: fixed;\n      top: 50%;\n      left: 50%;\n      transform: translate(-50%, -50%);\n      background: white;\n      padding: 20px;\n      border-radius: 8px;\n      box-shadow: 0 0 10px rgba(0,0,0,0.3);\n      z-index: 9999;\n      width: 400px;\n      height: 200px;\n      text-align: center;\n      font-family: Arial, sans-serif;\n      overflow: auto;\n    }\n    .do-video-spinner {\n      border: 4px solid #f3f3f3;\n      border-top: 4px solid #3498db;\n      border-radius: 50%;\n      width: 30px;\n      height: 30px;\n      animation: spin 2s linear infinite;\n      margin: 15px auto;\n    }\n    @keyframes spin {\n      0% { transform: rotate(0deg); }\n      100% { transform: rotate(360deg); }\n    }\n    .do-video-actions {\n      margin-top: 15px;\n    }\n    .do-video-progress {\n      margin: 10px 0;\n      font-size: 14px;\n      color: #333;\n    }\n    .do-video-current {\n      margin: 5px 0;\n      font-size: 12px;\n      color: #666;\n      word-break: break-all;\n    }\n  ", 
+      doVideoStyle.setAttribute("data-for", "do-video-modal"), document.head.appendChild(doVideoStyle), 
+      doVideoModal = document.createElement("div"), doVideoModal.className = "do-video-modal", 
+      doVideoModal.innerHTML = '\n    <h3>正在完成课程</h3>\n    <div class="do-video-spinner"></div>\n    <div class="do-video-progress" id="do-video-progress">准备中...</div>\n    <div class="do-video-current" id="do-video-current"></div>\n  ', 
+      document.body.appendChild(doVideoModal);
+      const courseId = utils_getCourseId();
+      try {
+        const videoList = await async function(courseId) {
+          const time = createAjaxTimestamp(), url = `https://www.zjooc.cn/ajax?service=/jxxt/api/course/courseStudent/getStudentCourseChapters&params[pageNo]=1&params[courseId]=${courseId}&params[urlNeed]=0&time=${time}&checkTimeout=true`;
+          try {
+            const signcheck = md5(Date.parse(new Date) + "gxpt_lanao"), timedate = Date.parse(new Date), response = await fetch(url, {
+              headers: {
+                signcheck: signcheck,
+                timedate: timedate
+              }
+            }), content = await response.text(), data = JSON.parse(content), videoMsg = [];
+            return data.data && Array.isArray(data.data) && data.data.forEach((chapter => {
+              const chapterName = chapter.name;
+              chapter.children && Array.isArray(chapter.children) && chapter.children.forEach((section => {
+                const sectionName = section.name;
+                section.children && Array.isArray(section.children) && section.children.forEach((resource => {
+                  const videoInfo = {
+                    Name: `${chapterName}-${sectionName}-${resource.name}`,
+                    courseId: courseId,
+                    chapterId: resource.id,
+                    learnStatus: resource.learnStatus || 0,
+                    time: resource.vedioTimeLength || 0
+                  };
+                  videoMsg.push(videoInfo);
+                }));
+              }));
+            })), videoMsg;
+          } catch (error) {
+            throw console.error("获取视频信息失败:", error), error;
+          }
+        }(courseId), videoCount = videoList.length;
+        if (0 === videoCount) return updateDoVideoProgress(0, 0, "没有未完成的视频！"), void setTimeout((() => {
+          closeDoVideoModal(), isDoVideoRunning = !1;
+        }), 2e3);
+        for (let idx = 0; idx < videoCount; idx++) {
+          if (!isDoVideoRunning) return void console.log("doVideo被用户停止");
+          const video = videoList[idx];
+          updateDoVideoProgress(idx + 1, videoCount, video.Name);
+          const time = createAjaxTimestamp(), checkTimeout = !0;
+          let url;
+          url = video.time > 0 ? `https://www.zjooc.cn/ajax?service=/learningmonitor/api/learning/monitor/videoPlaying&params[chapterId]=${video.chapterId}&params[courseId]=${video.courseId}&params[playTime]=${video.time}&params[percent]=100&time=${time}&checkTimeout=${checkTimeout}` : `https://www.zjooc.cn/ajax?service=/learningmonitor/api/learning/monitor/finishTextChapter&params[courseId]=${video.courseId}&params[chapterId]=${video.chapterId}&time=${time}&checkTimeout=${checkTimeout}`;
+          const signcheck = md5(Date.parse(new Date) + "gxpt_lanao"), timedate = Date.parse(new Date);
+          await fetch(url, {
+            headers: {
+              signcheck: signcheck,
+              timedate: timedate
+            }
+          }), console.log(`${video.Name}正在完成！[${Math.floor((idx + 1) / videoCount * 100)}%]`), 
+          await new Promise((resolve => setTimeout(resolve, 100)));
+        }
+        return doVideoModal && isDoVideoRunning && (doVideoModal.innerHTML = `\n        <h3>✅ 完成</h3>\n        <p>所有课程都已完成！</p>\n        <p>共完成 ${videoCount} 个课程</p>\n        <div class="do-video-actions">\n          <button id="do-video-close-btn">关闭</button>\n        </div>\n      `, 
+        doVideoModal.querySelector("#do-video-close-btn").addEventListener("click", (() => {
+          closeDoVideoModal();
+        }))), console.log("全部完成！"), isDoVideoRunning = !1, !0;
+      } catch (error) {
+        throw console.error("执行视频学习失败:", error), doVideoModal && isDoVideoRunning && (doVideoModal.innerHTML = `\n        <h3>❌ 错误</h3>\n        <p>执行失败: ${error.message}</p>\n        <div class="do-video-actions">\n          <button id="do-video-close-btn">关闭</button>\n        </div>\n      `, 
+        doVideoModal.querySelector("#do-video-close-btn").addEventListener("click", (() => {
+          closeDoVideoModal();
+        }))), isDoVideoRunning = !1, error;
+      }
+    }
     let isRunning = !0, currentVideoElement = null;
     function findLessons() {
       const allITags = document.getElementsByTagName("i");
@@ -2886,7 +3056,13 @@
       return !1;
     }
     function stopAutoPlay() {
-      if (console.log("正在停止自动播放..."), isRunning = !1, currentVideoElement) try {
+      console.log("正在停止自动播放..."), isRunning = !1;
+      try {
+        isDoVideoRunning = !1, closeDoVideoModal(), console.log("doVideo已停止"), console.log("已停止doVideo执行");
+      } catch (error) {
+        console.error("停止doVideo时出错:", error);
+      }
+      if (currentVideoElement) try {
         console.log("正在停止视频播放"), currentVideoElement.pause(), currentVideoElement.removeAttribute("src"), 
         currentVideoElement.load();
         [ "ended", "error", "loadedmetadata", "play" ].forEach((event => {
@@ -2909,66 +3085,21 @@
       } catch (error) {
         console.error("关闭任务选择窗口时出错:", error);
       }
+      try {
+        const doVideoModal = document.querySelector(".do-video-modal");
+        if (doVideoModal) {
+          console.log("正在关闭doVideo窗口");
+          const doVideoStyle = document.querySelector('style[data-for="do-video-modal"]');
+          doVideoStyle && document.head.removeChild(doVideoStyle), document.body.removeChild(doVideoModal);
+        }
+      } catch (error) {
+        console.error("关闭doVideo窗口时出错:", error);
+      }
       console.log("自动播放已完全停止");
     }
     async function autoPlay(parsedData, listenRouteWarpper) {
-      if (isRunning = !0, console.log("视频速刷：", settings.doVideo), settings.doVideo) return await async function() {
-        const style = document.createElement("style");
-        style.textContent = "\n    .loading-modal {\n      position: fixed;\n      top: 50%;\n      left: 50%;\n      transform: translate(-50%, -50%);\n      background: white;\n      padding: 20px;\n      border-radius: 8px;\n      box-shadow: 0 0 10px rgba(0,0,0,0.3);\n      z-index: 9999;\n      width: 300px;\n      text-align: center;\n    }\n    .loading-spinner {\n      border: 4px solid #f3f3f3;\n      border-top: 4px solid #3498db;\n      border-radius: 50%;\n      width: 30px;\n      height: 30px;\n      animation: spin 2s linear infinite;\n      margin: 15px auto;\n    }\n    @keyframes spin {\n      0% { transform: rotate(0deg); }\n      100% { transform: rotate(360deg); }\n    }\n    .loading-actions {\n      margin-top: 15px;\n    }\n  ", 
-        style.setAttribute("data-for", "loading-modal"), document.head.appendChild(style);
-        const modal = document.createElement("div");
-        modal.className = "loading-modal", modal.innerHTML = '\n    <h3>正在发送课件信息</h3>\n    <div class="loading-spinner"></div>\n    <p>本地服务器正在刷课，请稍候...</p>\n    <div class="loading-actions">\n      <button id="cancel-btn">取消</button>\n    </div>\n  ', 
-        document.body.appendChild(modal);
-        let isCancelled = !1;
-        modal.querySelector("#cancel-btn").addEventListener("click", (() => {
-          isCancelled = !0, document.body.removeChild(modal), document.head.removeChild(style), 
-          console.log("用户取消了请求");
-        }));
-        try {
-          const courseId = utils_getCourseId(), cookie = localStorage.getItem("www.zjooc.cn_cookies");
-          if (console.log(cookie), !courseId || !cookie) throw new Error("无法获取课程ID或Cookie");
-          const controller = new AbortController, signal = controller.signal, checkCancellation = setInterval((() => {
-            isCancelled && (controller.abort(), clearInterval(checkCancellation));
-          }), 100);
-          function readCurrentUserAndPassword() {
-            const currentUser = localStorage.getItem("currentUser");
-            if (currentUser) {
-              const currentAccount = (JSON.parse(localStorage.getItem("accounts")) || []).find((account => account.username === currentUser));
-              return currentAccount ? (console.log("当前用户名:", currentAccount.username), console.log("当前密码:", currentAccount.password), 
-              {
-                username: currentAccount.username,
-                password: currentAccount.password
-              }) : (console.log("未找到该用户的账号信息"), null);
-            }
-            return console.log("没有登录用户"), null;
-          }
-          const currentUserInfo = readCurrentUserAndPassword(), response = await fetch("http://localhost:5233/courseware", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              username: currentUserInfo.username,
-              password: currentUserInfo.password,
-              courseId: courseId
-            }),
-            signal: signal
-          });
-          if (clearInterval(checkCancellation), isCancelled) return;
-          if (!response.ok) throw new Error(`服务器响应错误: ${response.status}`);
-          const result = await response.json();
-          modal.innerHTML = '\n      <h3>发送成功</h3>\n      <p>所有课件都已完成，可以手动刷新网页</p>\n      <div class="loading-actions">\n        <button id="close-btn">关闭</button>\n      </div>\n    ', 
-          modal.querySelector("#close-btn").addEventListener("click", (() => {
-            document.body.removeChild(modal), document.head.removeChild(style);
-          })), console.log("课件信息发送成功:", result);
-        } catch (error) {
-          if (isCancelled) return;
-          modal.innerHTML = `\n      <h3>发送失败</h3>\n      <p>错误信息: ${error.message}</p>\n      <div class="loading-actions">\n        <button id="close-btn">关闭</button>\n      </div>\n    `, 
-          modal.querySelector("#close-btn").addEventListener("click", (() => {
-            document.body.removeChild(modal), document.head.removeChild(style);
-          })), console.error("发送课件信息失败:", error);
-        }
-      }(), [ "success", "所有任务已完成" ];
+      if (isRunning = !0, console.log("视频速刷：", settings.doVideo), settings.doVideo) return await doVideo(), 
+      [ "success", "所有任务已完成" ];
       const sections = Array.from(document.querySelectorAll("li span.of_eno")).filter((span => "LI" === span.parentElement.tagName));
       if (!sections.length) return console.log("未找到节元素"), [ "error", "请进入 章节内容>任意课件 再尝试自动播放" ];
       if (!parsedData || 0 === Object.keys(parsedData).length) return console.log("未找到数据"), 
@@ -3090,10 +3221,11 @@
           })), failedTasks.clear(), console.log("开始重试失败的任务:", tasks);
         }
       } catch (error) {
-        console.error("执行异常:", error);
+        return console.error("执行异常:", error), [ "error", "执行过程中发生异常: " + error.message ];
       } finally {
-        return stopAutoPlay(), [ "success", "所有任务已完成" ];
+        stopAutoPlay();
       }
+      return isRunning ? [ "success", "所有任务已完成" ] : [ "info", "用户已停止任务" ];
     }
     function createButton(text = "Get started", onClick = () => {}) {
       if (!createButton.styleAdded) {
@@ -3336,31 +3468,6 @@
         }
       }));
     }
-    async function checkAndDownload() {
-      try {
-        const controller = new AbortController, timeoutId = setTimeout((() => controller.abort()), 1e3);
-        await fetch("http://localhost:5233/courseware", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            username: "",
-            password: ""
-          }),
-          signal: controller.signal
-        });
-        return clearTimeout(timeoutId), !0;
-      } catch (error) {
-        const modal = document.createElement("div");
-        modal.style.cssText = "\n            position: fixed;\n            top: 50%;\n            left: 50%;\n            transform: translate(-50%, -50%);\n            background: white;\n            padding: 20px;\n            border-radius: 8px;\n            box-shadow: 0 0 10px rgba(0,0,0,0.3);\n            z-index: 10000;\n            width: 400px;\n        ", 
-        modal.innerHTML = '\n            <h3 style="margin-top: 0;">无法连接到本地服务器，请下载ZError并开启服务，否则请关闭该选项</h3>\n            <p>下载途径：</p>\n            <ul style="list-style: none; padding-left: 0;">\n                <li style="margin-bottom: 10px;">\n                    <strong>蓝奏云：</strong>\n                    <a href="https://wwyl.lanzouv.com/b00ocrzzje" target="_blank">点击下载</a>\n                    （密码：43so）\n                </li>\n                <li style="margin-bottom: 10px;">\n                    <strong>直链下载：</strong>\n                    <a href="https://dwpan.com/f/bYhj/ZError_Setup_1.0.0.exe" target="_blank">点击下载</a>\n                </li>\n                    <li style="margin-bottom: 10px;">\n                    <strong>官网：</strong>\n                    <a href="https://zerror.neoregion.cn/" target="_blank">点击访问</a>\n                </li>\n            </ul>\n            <button style="\n                padding: 8px 16px;\n                background: #4D6BFE;\n                color: white;\n                border: none;\n                border-radius: 4px;\n                cursor: pointer;\n                display: block;\n                margin: 20px auto 0;\n            ">关闭</button>\n        ', 
-        document.body.appendChild(modal);
-        return modal.querySelector("button").addEventListener("click", (() => {
-          document.body.removeChild(modal);
-        })), !1;
-      }
-    }
     function showConfirmDialog(message, title = "是否确认开启") {
       return new Promise((resolve => {
         const overlay = document.createElement("div");
@@ -3377,6 +3484,26 @@
           document.body.removeChild(modal), document.body.removeChild(overlay), resolve(!1);
         }));
       }));
+    }
+    async function autoPlayZJLLL() {
+      const wait = ms => new Promise((resolve => setTimeout(resolve, ms)));
+      await (async () => {
+        const chapters = (() => {
+          const chapters = document.querySelectorAll("div.chapter");
+          return console.log("找到的章节数量:", chapters.length), chapters;
+        })();
+        for (const chapter of chapters) {
+          const chapterText = chapter.textContent;
+          chapterText.includes("100%") || (console.log("开始播放章节:", chapterText), chapter.click(), 
+          await wait(3e3), await new Promise((resolve => {
+            const checkVideo = setInterval((() => {
+              const video = document.querySelector("video");
+              !video || video.ended ? (clearInterval(checkVideo), resolve()) : video && (video.playbackRate = parseFloat(settings.speed) || 1);
+            }), 1e3);
+          })), await wait(2e3));
+        }
+        console.log("所有章节播放完成");
+      })();
     }
     createButton.styleAdded = !1, function() {
       (async function(fontName, fontUrl) {
@@ -3434,12 +3561,13 @@
       const zzxLogo = document.createElement("img");
       zzxLogo.src = imageData.zzxLogo, zzxLogo.style.width = "20px";
       const titleText = document.createElement("span");
-      titleText.innerHTML = "在浙学网课助手 v2.1.0", titleText.style.marginLeft = "10px";
+      titleText.innerHTML = "ZE网课助手 v2.1.1", titleText.style.marginLeft = "10px";
       const title = document.createElement("div");
       title.style.display = "flex", title.appendChild(zzxLogo), title.appendChild(titleText), 
       header.appendChild(title);
       const minimizeButton = document.createElement("button");
-      minimizeButton.style.backgroundColor = "transparent", minimizeButton.innerHTML = '\n          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">\n              <path d="M0 0h24v24H0V0z" fill="none"></path>\n              <path d="M19 13H5v-2h14v2z" fill="white"></path>\n          </svg>\n      ', 
+      minimizeButton.style.backgroundColor = "transparent", minimizeButton.style.border = "none", 
+      minimizeButton.innerHTML = '\n          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">\n              <path d="M0 0h24v24H0V0z" fill="none"></path>\n              <path d="M19 13H5v-2h14v2z" fill="white"></path>\n          </svg>\n      ', 
       minimizeButton.style.cursor = "pointer", header.appendChild(minimizeButton);
       const contentDiv = document.createElement("div");
       contentDiv.style.display = "flex", contentDiv.style.height = "calc(100% - 40px)";
@@ -3629,7 +3757,29 @@
         DeepSeekProxyCheckbox.checked = settings.deepseekProxy, console.log("deepseekProxy", settings.deepseekProxy), 
         DeepSeekProxyCheckbox.addEventListener("change", (() => {
           settings.deepseekProxy ? settings.deepseekProxy = !1 : (settings.deepseekProxy = !0, 
-          checkAndDownload());
+          async function() {
+            try {
+              const controller = new AbortController, timeoutId = setTimeout((() => controller.abort()), 1e3);
+              return await fetch("http://localhost:5233/courseware", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  username: "",
+                  password: ""
+                }),
+                signal: controller.signal
+              }), clearTimeout(timeoutId), !0;
+            } catch (error) {
+              const modal = document.createElement("div");
+              return modal.style.cssText = "\n            position: fixed;\n            top: 50%;\n            left: 50%;\n            transform: translate(-50%, -50%);\n            background: white;\n            padding: 20px;\n            border-radius: 8px;\n            box-shadow: 0 0 10px rgba(0,0,0,0.3);\n            z-index: 10000;\n            width: 400px;\n        ", 
+              modal.innerHTML = '\n            <h3 style="margin-top: 0;">无法连接到本地服务器，请下载ZError并开启服务，否则请关闭该选项</h3>\n            <p>下载途径：</p>\n            <ul style="list-style: none; padding-left: 0;">\n                <li style="margin-bottom: 10px;">\n                    <strong>蓝奏云：</strong>\n                    <a href="https://wwyl.lanzouv.com/b00ocrzzje" target="_blank">点击下载</a>\n                    （密码：43so）\n                </li>\n                <li style="margin-bottom: 10px;">\n                    <strong>直链下载：</strong>\n                    <a href="https://dwpan.com/f/bYhj/ZError_Setup_1.0.0.exe" target="_blank">点击下载</a>\n                </li>\n                    <li style="margin-bottom: 10px;">\n                    <strong>官网：</strong>\n                    <a href="https://zerror.neoregion.cn/" target="_blank">点击访问</a>\n                </li>\n            </ul>\n            <button style="\n                padding: 8px 16px;\n                background: #4D6BFE;\n                color: white;\n                border: none;\n                border-radius: 4px;\n                cursor: pointer;\n                display: block;\n                margin: 20px auto 0;\n            ">关闭</button>\n        ', 
+              document.body.appendChild(modal), modal.querySelector("button").addEventListener("click", (() => {
+                document.body.removeChild(modal);
+              })), !1;
+            }
+          }());
         })), displayArea.appendChild(DeepSeekProxyWrapper);
         const DoVideoLabel = document.createElement("label");
         DoVideoLabel.classList.add("switch");
@@ -3652,16 +3802,10 @@
         DoVideoWrapper.appendChild(questionMark2), DoVideoWrapper.appendChild(DoVideoLabel), 
         DoVideoCheckbox.checked = settings.doVideo, DoVideoCheckbox.addEventListener("change", (async function() {
           if (console.log(DoVideoCheckbox), !settings.doVideo) {
-            if (!await showConfirmDialog('不建议开启，关闭该选项也可以使用"自动播放"挂课，但开启后的"自动播放"将使用速刷软件在几秒内完成所有课件，这意味着有清空分数的风险，以及需要下载额外的软件（ZError），因此除非正常刷课时间来不及了，否则不建议开启！<br>注意:你在软件中开启服务后，需要关闭该选项，再次打开以进行登录')) return console.log("取消开启"), 
+            if (!await showConfirmDialog('不建议开启，关闭该选项也可以使用"自动播放"挂课，但开启后"自动播放"将在几秒内完成所有课件，会有被清空的风险，因此除真的非来不及，否则不建议开启！')) return console.log("取消开启"), 
             void renderSettingsPage();
           }
-          if (!settings.doVideo && this.checked) {
-            settings.doVideo = !0;
-            if (!await checkAndDownload()) return;
-            const windowWidth = 600, windowHeight = 300, left = (window.screen.width - windowWidth) / 2, top = (window.screen.height - windowHeight) / 2, loginWindow = window.open("", "login", `width=${windowWidth},height=${windowHeight},left=${left},top=${top}`);
-            loginWindow.document.write("\n                    <html>\n                        <head>\n                            <title>登录</title>\n                            <style>\n                                body { font-family: Arial, sans-serif; padding: 20px; }\n                                .container { text-align: center; }\n                                input { margin: 10px; padding: 5px; }\n                                button { padding: 5px 15px; }\n                                button:disabled { opacity: 0.6; cursor: not-allowed; }\n                                select { margin: 10px; padding: 5px; }\n                            </style>\n                        </head>\n                        <body>\n                            <div class=\"container\">\n                                <h2>请输入在浙学的账号和密码</h2>\n                                \n                                <select id=\"usernameSelect\" onchange=\"loadUsername()\">\n                                    <option value=\"\">选择之前登录的账号</option>\n                                </select>\n                                <br>\n                                <input type=\"text\" id=\"username\" placeholder=\"用户名\">\n                                <br>\n                                <input type=\"password\" id=\"password\" placeholder=\"密码\">\n                                <br>\n                                <button id=\"loginBtn\" onclick=\"login()\">确定</button>\n                                <button onclick=\"deleteAccount()\">删除账号</button>\n                            </div>\n                            <script>\n                                // 从localStorage加载账号信息\nfunction loadUsername() {\n                    const selectedUsername = document.getElementById('usernameSelect').value;\n                    if (selectedUsername) {\n                        document.getElementById('username').value = selectedUsername;\n                        const storedData = JSON.parse(localStorage.getItem('accounts')) || [];\n                        const account = storedData.find(acc => acc.username === selectedUsername);\n                        if (account) {\n                            document.getElementById('password').value = account.password;\n                        }\n                    }\n                }\n\n                // 加载之前保存的账号\n                function loadSavedAccounts() {\n                    const storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                    const selectElement = document.getElementById('usernameSelect');\n                    selectElement.innerHTML = '<option value=\"\">选择之前登录的账号</option>';  // 清空现有的选项\n                    storedAccounts.forEach(account => {\n                        const option = document.createElement('option');\n                        if(account.username){\n                            option.value = account.username;\n                            option.textContent = account.username;\n                            selectElement.appendChild(option);\n                        }\n                    });\n                }\n\n                // 删除账号\n                function deleteAccount() {\n                    const selectedUsername = document.getElementById('usernameSelect').value;\n                    if (!selectedUsername) {\n                        alert('请先选择一个账号进行删除');\n                        return;\n                    }\n                    \n                    let storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                    storedAccounts = storedAccounts.filter(account => account.username !== selectedUsername);\n                    localStorage.setItem('accounts', JSON.stringify(storedAccounts));\n                    loadSavedAccounts();\n                    document.getElementById('username').value = '';\n                    document.getElementById('password').value = '';\n                    alert('账号已删除');\n                }\n                \n                                // 登录\n                                function login() {\n                                    const username = document.getElementById('username').value;\n                                    const password = document.getElementById('password').value;\n                                    const loginBtn = document.getElementById('loginBtn');\n                                    \n                                    // 禁用登录按钮\n                                    loginBtn.disabled = true;\n                                    loginBtn.textContent = '登录中...';\n                                    \n                                    // 发送POST请求\n                                    const xhr = new XMLHttpRequest();\n                                    xhr.open('POST', 'http://localhost:5233/courseware', true);\n                                    \n                                    // 设置请求头\n                                    xhr.setRequestHeader('Content-Type', 'application/json');\n                                    \n                                    // 处理响应\n                                    xhr.onload = function() {\n                                        if (xhr.status === 200) {\n                                            const response = JSON.parse(xhr.responseText);\n                                            if (response.status === 'success') {\n                                                alert('登录成功');\n                                                \n                                                // 保存当前登录的用户名到localStorage\n                                                localStorage.setItem('currentUser', username);\n                \n                                                // 保存账号和密码到localStorage中的一个专门的数组中\n                                                let storedAccounts = JSON.parse(localStorage.getItem('accounts')) || [];\n                                                const existingAccount = storedAccounts.find(account => account.username === username);\n                                                if (!existingAccount) {\n                                                    storedAccounts.push({ username: username, password: password });\n                                                    localStorage.setItem('accounts', JSON.stringify(storedAccounts));\n                                                }\n                \n                                                loadSavedAccounts();\n                                                window.close();\n                                            } else {\n                                                alert('处理失败：' + response.message);\n                                                // 恢复按钮状态\n                                                loginBtn.disabled = false;\n                                                loginBtn.textContent = '确定';\n                                            }\n                                        } else {\n                                            alert('请求失败，请检查账号密码，状态码：' + xhr.status);\n                                            // 恢复按钮状态\n                                            loginBtn.disabled = false;\n                                            loginBtn.textContent = '确定';\n                                        }\n                                    };\n                                    \n                                    xhr.onerror = function() {\n                                        alert('网络错误，请求失败，请检查软件服务是否开启');\n                                        // 恢复按钮状态\n                                        loginBtn.disabled = false;\n                                        loginBtn.textContent = '确定';\n                                    };\n                                    \n                                    // 发送数据\n                                    const data = { username: username, password: password };\n                                    xhr.send(JSON.stringify(data));\n                                }\n                \n                                // 页面加载时加载保存的账号\n                                window.onload = function() {\n                                    loadSavedAccounts();\n                                }\n                            <\/script>\n                        </body>\n                    </html>\n                "), 
-            loginWindow.document.close();
-          } else settings.doVideo = this.checked;
+          !settings.doVideo && this.checked ? settings.doVideo = !0 : settings.doVideo = this.checked;
         })), displayArea.appendChild(DoVideoWrapper);
         const apiSettingText = document.createElement("span");
         apiSettingText.textContent = "DeepSeek API Key", apiSettingText.style.fontFamily = "SmileySans-Oblique, sans-serif", 
@@ -3742,12 +3886,15 @@
         autoplayButton.style.transition = "all 0.2s", autoplayButton.style.webkitTransition = "all 0.2s", 
         autoplayButton.addEventListener("click", (async function() {
           if ("自动播放" === autoplayButton.innerText) {
-            isPlaying = !0, autoplayButton.innerText = "停止自动播放", CourseChapters && 0 !== Object.keys(CourseChapters).length || (CourseChapters = JSON.parse(localStorage.getItem("CourseChapters"))), 
-            stopAnimation = createFloatingImageWorld();
-            const msg = await autoPlay(CourseChapters, listenRouteWarpper);
-            console.log(msg), "error" === msg[0] ? (console.log(msg[1]), displayErrorNotification("页面错误", [ msg[1] ])) : (console.log(msg[1]), 
-            displaySuccessNotification(msg[1], "")), autoplayButton.innerText = "自动播放", isPlaying = !1, 
-            stopAnimation();
+            if (isPlaying = !0, autoplayButton.innerText = "停止自动播放", "www.zjooc.cn" !== window.location.hostname) console.log(localStorage.getItem("CourseChaptersZJLLL")), 
+            displaySuccessNotification("该功能尚不完善", "如想为该功能优化做测试，请前往脚本官网联系开发者"), await autoPlayZJLLL(); else {
+              CourseChapters && 0 !== Object.keys(CourseChapters).length || (CourseChapters = JSON.parse(localStorage.getItem("CourseChapters"))), 
+              stopAnimation = createFloatingImageWorld();
+              const msg = await autoPlay(CourseChapters, listenRouteWarpper);
+              console.log(msg), "error" === msg[0] ? (console.log(msg[1]), displayErrorNotification("页面错误", [ msg[1] ])) : (console.log(msg[1]), 
+              displaySuccessNotification(msg[1], ""));
+            }
+            autoplayButton.innerText = "自动播放", isPlaying = !1, stopAnimation();
           } else isPlaying = !1, stopAutoPlay(), autoplayButton.innerText = "自动播放", stopAnimation();
         })), autoplayButton.addEventListener("mouseenter", (() => {
           autoplayButton.style.backgroundColor = "#6fc5ff", autoplayButton.style.boxShadow = "0 0 20px #6fc5ff50", 
@@ -3843,7 +3990,7 @@
         document.head.querySelector("#error-notification-styles") || (style.id = "error-notification-styles", 
         document.head.appendChild(style)), setTimeout((() => {
           notificationContainer.remove();
-        }), 4e3);
+        }), 3e3);
       }
       async function toggleExamMode() {
         const examModeCheckbox = document.getElementsByClassName("examMode")[0];
@@ -4165,11 +4312,10 @@
           this._requestHeaders[header.toLowerCase()] = value, originalSetRequestHeader(header, value);
         }, this.addEventListener("load", (async function() {
           try {
-            if ("GET" === method.toUpperCase()) {
-              const response = JSON.parse(this.responseText);
-              if (response.data && response.data.paperSubjectList && (cachedPaperSubjectList = response.data.paperSubjectList, 
-              (originalJson = response) && originalJson.data && originalJson.data.hasOwnProperty("stuName") && delete originalJson.data.stuName, 
-              checkRightAnswer(originalJson))) {
+            const response = JSON.parse(this.responseText);
+            if (response.data && response.data.paperSubjectList) {
+              if (cachedPaperSubjectList = response.data.paperSubjectList, (originalJson = response) && originalJson.data && originalJson.data.hasOwnProperty("stuName") && delete originalJson.data.stuName, 
+              checkRightAnswer(originalJson)) {
                 localStorage.setItem("originalJsonCopy", JSON.stringify(originalJson));
                 try {
                   const paperId = originalJson.data.id, response = await fetchOriginalJson(paperId, !1);
@@ -4196,6 +4342,10 @@
               if ("/jxxt/api/course/courseStudent/getStudentCourseChapters" === new URLSearchParams(fullUrl.search).get("service")) {
                 const CourseChapters = JSON.parse(this.responseText);
                 localStorage.setItem("CourseChapters", JSON.stringify(CourseChapters));
+              }
+              if (fullUrl.href.includes("https://course-center-detail.zjlll.cn/api/s-course/stu/chapter/tree/")) {
+                const CourseChapters = JSON.parse(this.responseText);
+                localStorage.setItem("CourseChaptersZJLLL", JSON.stringify(CourseChapters));
               }
             }
           } catch (e) {
