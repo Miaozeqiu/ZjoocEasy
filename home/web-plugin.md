@@ -59,7 +59,7 @@ head:
 ## 🤯脚本猫打不开怎么办？
 你可以点击下链接安装脚本
 
-[点击查看代码](/ZjoocEasy_2.1.0.user.js)
+[点击查看代码](/ZjoocEasy_2.1.2.user.js)
 
 ![images/newscript.png](/images/newscript.png)
 
