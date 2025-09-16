@@ -1,5 +1,8 @@
 
 # 本站的更新日志
+## 2025/9/16
+1. <span class="fix">修复</span>[助手] 修复无法获取章节信息的问题
+
 ## 2025/6/18
 1. <span class="improve">优化</span>[助手]课件速刷不依赖于ZError，提高了可用性
 2. <span class="fix">修复</span>[助手]回看试卷无法显示答案
