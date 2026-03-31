@@ -6,6 +6,7 @@ export default defineConfig({
   description: "为在浙江学用户提供更好的使用体验和题库服务，支持OCS网课助手，免费题库搜索，一键刷课，DeepSeek AI答案解析",
   lang: 'zh-CN',
   head: [
+    
     // Favicon
     [
       "link",
@@ -56,6 +57,7 @@ export default defineConfig({
         'query-input': 'required name=search_term_string'
       }
     })],
+    ['script', { defer: '', async: '', src: 'https://cn.vercount.one/js' }],
   ],
 
   themeConfig: {
@@ -82,7 +84,8 @@ export default defineConfig({
         items: [
           { text: '插件安装', link: '/home/web-plugin' },
           { text: '课件速刷', link: '/home/QuickCoursewareBrowsing' },
-          { text: '本地AI代理', link: '/home/DeepSeek'},
+          { text: 'ZError 在线题库', link: 'https://tiku.zerror.cc' },
+          { text: '学习通网课助手教程', link: 'https://docs.zerror.cc/online/API' },
           // { text: '获取API Key', link: '/home/GetAPIKey'},
           { text: '常见问题', link: '/home/frequently-asked-questions'},
         ]
