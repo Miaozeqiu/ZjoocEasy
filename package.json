@@ -1,5 +1,7 @@
 {
   "scripts": {
+    "build": "vitepress build",
+    "dev": "vitepress dev --host 0.0.0.0",
     "docs:dev": "vitepress dev --host 0.0.0.0",
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview"
