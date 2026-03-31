@@ -17,51 +17,41 @@ head:
 
 > 过程不会超过5分钟哦
 
+## 步骤1：安装浏览器扩展-脚本猫
 
-## 📲安装方法
-
-> 以下展示脚本猫(ScriptCat)的安装方法，Tampermonkey(油猴)的安装方法类似，整个安装过程不会超过3分钟
-
-### 📺视频教程
-
-[点击观看](https://www.xiaohongshu.com/discovery/item/6787cf1d000000001c00f4c3?source=webshare&xhsshare=pc_web&xsec_token=ABKhdH-1OH--j4ksujqKO9xeuQdEb1Kl9lzHWJ4YFFqWA=&xsec_source=pc_share)
-视频中遗漏了“打开开发者模式”，即下方步骤3️⃣
+<div class="pic">
+<img src="/images/安装浏览器扩展.png" alt="获取扩展" />
+</div>
 
 
-::: tip  1️⃣安装扩展猫浏览器插件
+<div class="pic">
+<img src="/images/安装脚本猫.png" alt="脚本猫_Edge" />
+</div>
 
-打开`浏览器的扩展商店`，找到并安装`脚本猫`
-![images/获取扩展.png](/images/获取扩展.png)
+## 步骤2：浏览器设置-打开开发人员模式
 
+<div class="pic">
+<img src="/images/打开开发人员模式.png" alt="打开开发人员模式" />
+</div>
 
-![images/安装油猴浏览器插件2.png](/images/脚本猫_Edge.png)
-:::
+打开开发者模式，然后点击脚本猫的**详细信息**
 
+<div class="pic">
+<img src="/images/打开开发者模式2.png" alt="打开开发者模式2" />
+</div>
 
-::: tip 2️⃣安装脚本
+确保**允许用户脚本**选项已勾选
 
-打开脚本的[脚本猫页面](https://scriptcat.org/zh-CN/script-show-page/2522)，安装脚本 [打不开?](#🤯脚本猫打不开怎么办)
-![images/在浙学_脚本猫png](/images/在浙学_脚本猫.png) 
-:::
+<div class="pic">
+<img src="/images/允许用户脚本.png" alt="允许用户脚本" />
+</div>
 
+## 步骤3：安装在浙学助手
+完成第一步后，点击[在这学助手安装链接](/ZjoocEasy_2.1.3.user.js)，即可安装OCS网课助手。你也可以手动打开https://pages.zaizhexue.top/ZjoocEasy_2.1.3.user.js 安装
 
-::: tip 3️⃣打开浏览器开发者模式
-
-![images/打开开发人员模式.png](/images/打开开发人员模式.png)
-:::
-
-
-::: tip 4️⃣登录
-
+## 步骤4：登录浙学助手
 第一次使用脚本时需要登录以使用显示答案功能，除该功能外，其余功能都是无需登录的
-:::
 
-## 🤯脚本猫打不开怎么办？
-你可以点击下链接安装脚本
-
-[点击查看代码](/ZjoocEasy_2.1.3.user.js)
-
-![images/newscript.png](/images/newscript.png)
 
 
 <div align="center">
