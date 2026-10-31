@@ -103,7 +103,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/Miaozeqiu/ZjoocEasy/' }
+      { icon: 'github', link: 'https://github.com/Miaozeqiu/ZjoocEasyJS' }
     ]
   },
   cleanUrls: true,  // 开启 cleanUrls 功能
