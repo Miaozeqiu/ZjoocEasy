@@ -21,10 +21,9 @@
 </div>
 <a href="https://scriptcat.org/zh-CN/script-show-page/2522"><img src="https://scriptcat.org/assets/logo.png" width="45" height="45" style="margin-top:15px"/></a> 
 <div style="display: flex; justify-content: flex-start; justify-content: center; margin-top: 8px" >
-<!-- 修正：使用 shields.io 官方支持的动态 badge 方式，通过 ScriptCat 的 JSON 接口获取今日安装量 -->
-<img src="https://img.shields.io/badge/dynamic/json?color=orange&label=%E4%BB%8A%E6%97%A5%E5%AE%89%E8%A3%85&query=today_install&url=https://scriptcat.org/api/scripts/2522.json" style="margin:2px"/>
+<img src="https://img.shields.io/badge/dynamic/json?color=orange&label=%E4%BB%8A%E6%97%A5%E5%AE%89%E8%A3%85&query=$.data.today_install&url=https%3A%2F%2Fscriptcat.org%2Fapi%2Fv2%2Fscripts%2F2522" style="margin:2px"/>
 
-<img src="https://img.shields.io/badge/dynamic/xml?color=red&label=%E6%80%BB%E5%85%B1%E5%AE%89%E8%A3%85&url=https%3A%2F%2Fscriptcat.org%2Fzh-CN%2Fscript-show-page%2F2522&query=/html/body/div[2]/main/div/div[2]/div[1]/div[1]/div/div/div[1]/div/div[3]/div/div[1]/div/div/div/div[2]/span/span" style="margin:2px"/> 
+<img src="https://img.shields.io/badge/dynamic/json?color=red&label=%E6%80%BB%E5%85%B1%E5%AE%89%E8%A3%85&query=$.data.total_install&url=https%3A%2F%2Fscriptcat.org%2Fapi%2Fv2%2Fscripts%2F2522" style="margin:2px"/> 
 
 </div>
 </div>
