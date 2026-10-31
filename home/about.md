@@ -6,7 +6,7 @@
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
     <h1>在浙学助手</h1>
-    <img src="https://img.shields.io/github/stars/Miaozeqiu/ZjoocEasy" alt="GitHub Stars"/>
+    <img src="https://img.shields.io/github/stars/Miaozeqiu/ZjoocEasyJS" alt="GitHub Stars"/>
 </div>
 
 > 在浙学平台的网页插件|答案显示|一键刷课|解除粘贴限制
