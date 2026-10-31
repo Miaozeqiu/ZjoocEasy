@@ -2,7 +2,7 @@
   
 <img src="https://www.helloimg.com/i/2025/01/09/677fe95941a05.png" width="80" height="80" /> 
 
-# ZjoocEazy|在浙学网课助手 ![GitHub Repo stars](https://img.shields.io/github/stars/Miaozeqiu/ZjoocEasy)
+# ZjoocEazy|在浙学网课助手 ![GitHub Repo stars](https://img.shields.io/github/stars/Miaozeqiu/ZjoocEasyJS)
 
 > 在浙学平台的网页插件|答案显示|一键刷课|解除粘贴限制
 
