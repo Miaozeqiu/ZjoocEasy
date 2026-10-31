@@ -1,1 +1,23 @@
 node_modules
+
+# Local secrets and credential notes
+.env*
+*credentials*
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*.secret
+secrets.json
+secrets.yaml
+secrets.yml
+apis.txt
+*api-key*
+*apikey*
+*api_key*
+*.keystore
