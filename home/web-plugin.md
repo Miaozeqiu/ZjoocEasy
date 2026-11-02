@@ -47,7 +47,7 @@ head:
 </div>
 
 ## 步骤3：安装在浙学助手
-完成第一步后，点击[在这学助手安装链接](/ZjoocEasy_2.1.3.user.js)，即可安装OCS网课助手。你也可以手动打开https://pages.zaizhexue.top/ZjoocEasy_2.1.3.user.js 安装
+完成第一步后，点击[在这学助手安装链接](/ZjoocEasy_2.1.4.user.js)，即可安装OCS网课助手。你也可以手动打开https://pages.zaizhexue.top/ZjoocEasy_2.1.4.user.js 安装
 
 ## 步骤4：登录浙学助手
 第一次使用脚本时需要登录以使用显示答案功能，除该功能外，其余功能都是无需登录的
